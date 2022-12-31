@@ -189,7 +189,6 @@ class Accounts extends Component
 
     ## COMPUTATION BASE ON THE BRACKET
     private function computation_bracket($data){
-        // dd($data);
         $newComputation = [];
         $c = 0;
         $brackets = RptBracket::get();
@@ -675,8 +674,10 @@ class Accounts extends Component
                     $someArray[$count]['quarter_label'] = $value->first()['label'];
                     $someArray[$count]['quarter_value'] = $value->first()['quarter_value'];
                 } elseif($value->first()['from'] < $this->avYearOld) {
-                    if ($value->first()['from'] == $this->nextPaymentYear && $value->first()['quarter_value'] > 0.25 && $value->first()['quarter_value'] < 1) {
+
+                    if ($value->first()['from'] == $this->nextPaymentYear && $value->first()['quarter_value'] >= 0.25 && $value->first()['quarter_value'] < 1) {
                         $someArray[$count]['quarter_label'] = $value->first()['label'].' - '.$value->last()['year_no'];
+                        $someArray[$count]['quarter_value'] = $value->first()['quarter_value'];
                     } else {
                         $someArray[$count]['quarter_label'] = $value->first()['from'];
                         $someArray[$count]['quarter_value'] = 1;
