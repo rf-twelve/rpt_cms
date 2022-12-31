@@ -1,0 +1,115 @@
+models:
+  Supplier:
+    supp_id: string:11
+    supp_name: string:50
+    supp_contact_id: string:11
+    supp_address_id: string:100
+    supp_contact_person_acc_id: string:50
+    is_active: string:11
+    softDeletes
+
+  Customer:
+    cus_acc_id: string:11
+    cus_pref_tax: string:11
+    cus_pref_discount: string:11
+    cus_pay_method: string:25
+    is_active: string:11
+    softDeletes
+
+  Account:
+    acc_id: string:11
+    acc_first_name: string:50
+    acc_middle_name: string:50
+    acc_last_name: string:50
+    acc_position: string:50
+    acc_birth_date: string:50
+    acc_contact_id: string:11
+    acc_address_id: string:100
+    softDeletes
+
+  Address:
+    address_id: string:11
+    address_st: string:50
+    address_brgy: string:50
+    address_city: string:50
+    address_prov: string:50
+    address_zip: string:11
+    softDeletes
+
+  Contact:
+    contact_id: string:11
+    contact_cp: string:20
+    contact_tp: string:20
+    contact_email: string:50
+    softDeletes
+
+  Category:
+    cat_id: string:11
+    cat_name: string:50
+    cat_description: string:50
+    is_active: string:11
+    softDeletes
+
+  Variant:
+    var_id: string:11
+    var_size: string:50
+    var_color: string:50
+    vat_description: string:50
+    is_active: string:11
+    softDeletes
+
+  Brand:
+    brand_id: string:11
+    brand_name: string:50
+    brand_description: string:50
+    is_active: string:11
+    softDeletes
+
+  Product:
+    prod_id: string:11
+    prod_sku: string:50
+    prod_alert_stock: string:11
+    prod_name: string:50
+    prod_image: string:50
+    prod_price_option_id: string:11
+    prod_description: string:50
+    prod_brand_id: string:11
+    prod_cat_id: string:11
+    prod_var_id: string:11
+    is_active: string:11
+    softDeletes
+
+  PriceOption:
+    price_id: string:11
+    price_regular: string:11
+    price_wholesale: string:11
+
+  AuditTrail:
+    audit_id: string:11
+    audit_name: string:50
+    audit_notes: string:50
+    is_active: string:11
+    softDeletes
+
+controllers:
+  Account:
+    index:
+      render: account.index
+  Supplier:
+    index:
+      render: supplier.index
+  Customer:
+    index:
+      render: customer.index
+  Category:
+    index:
+      render: category.index
+  Variant:
+    index:
+      render: variant.index
+  Product:
+    index:
+      render: product.index
+  AuditTrail:
+    index:
+      render: audit.index

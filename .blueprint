@@ -1,0 +1,69 @@
+created:
+    - app/Http/Controllers/AccountController.php
+    - app/Http/Controllers/SupplierController.php
+    - app/Http/Controllers/CustomerController.php
+    - app/Http/Controllers/CategoryController.php
+    - app/Http/Controllers/VariantController.php
+    - app/Http/Controllers/ProductController.php
+    - app/Http/Controllers/AuditTrailController.php
+    - database/factories/SupplierFactory.php
+    - database/factories/CustomerFactory.php
+    - database/factories/AccountFactory.php
+    - database/factories/AddressFactory.php
+    - database/factories/ContactFactory.php
+    - database/factories/CategoryFactory.php
+    - database/factories/VariantFactory.php
+    - database/factories/BrandFactory.php
+    - database/factories/ProductFactory.php
+    - database/factories/PriceOptionFactory.php
+    - database/factories/AuditTrailFactory.php
+    - database/migrations/2020_11_12_054552_create_suppliers_table.php
+    - database/migrations/2020_11_12_054553_create_customers_table.php
+    - database/migrations/2020_11_12_054554_create_accounts_table.php
+    - database/migrations/2020_11_12_054555_create_addresses_table.php
+    - database/migrations/2020_11_12_054556_create_contacts_table.php
+    - database/migrations/2020_11_12_054557_create_categories_table.php
+    - database/migrations/2020_11_12_054558_create_variants_table.php
+    - database/migrations/2020_11_12_054559_create_brands_table.php
+    - database/migrations/2020_11_12_054600_create_products_table.php
+    - database/migrations/2020_11_12_054601_create_price_options_table.php
+    - database/migrations/2020_11_12_054602_create_audit_trails_table.php
+    - app/Supplier.php
+    - app/Customer.php
+    - app/Account.php
+    - app/Address.php
+    - app/Contact.php
+    - app/Category.php
+    - app/Variant.php
+    - app/Brand.php
+    - app/Product.php
+    - app/PriceOption.php
+    - app/AuditTrail.php
+    - tests/Feature/Http/Controllers/AccountControllerTest.php
+    - tests/Feature/Http/Controllers/SupplierControllerTest.php
+    - tests/Feature/Http/Controllers/CustomerControllerTest.php
+    - tests/Feature/Http/Controllers/CategoryControllerTest.php
+    - tests/Feature/Http/Controllers/VariantControllerTest.php
+    - tests/Feature/Http/Controllers/ProductControllerTest.php
+    - tests/Feature/Http/Controllers/AuditTrailControllerTest.php
+    - resources/views/account/index.blade.php
+    - resources/views/supplier/index.blade.php
+    - resources/views/customer/index.blade.php
+    - resources/views/category/index.blade.php
+    - resources/views/variant/index.blade.php
+    - resources/views/product/index.blade.php
+    - resources/views/audit/index.blade.php
+updated:
+    - routes/web.php
+models:
+    Supplier: { supp_id: 'string:11', supp_name: 'string:50', supp_contact_id: 'string:11', supp_address_id: 'string:100', supp_contact_person_acc_id: 'string:50', is_active: 'string:11', softdeletes: softDeletes }
+    Customer: { cus_acc_id: 'string:11', cus_pref_tax: 'string:11', cus_pref_discount: 'string:11', cus_pay_method: 'string:25', is_active: 'string:11', softdeletes: softDeletes }
+    Account: { acc_id: 'string:11', acc_first_name: 'string:50', acc_middle_name: 'string:50', acc_last_name: 'string:50', acc_position: 'string:50', acc_birth_date: 'string:50', acc_contact_id: 'string:11', acc_address_id: 'string:100', softdeletes: softDeletes }
+    Address: { address_id: 'string:11', address_st: 'string:50', address_brgy: 'string:50', address_city: 'string:50', address_prov: 'string:50', address_zip: 'string:11', softdeletes: softDeletes }
+    Contact: { contact_id: 'string:11', contact_cp: 'string:20', contact_tp: 'string:20', contact_email: 'string:50', softdeletes: softDeletes }
+    Category: { cat_id: 'string:11', cat_name: 'string:50', cat_description: 'string:50', is_active: 'string:11', softdeletes: softDeletes }
+    Variant: { var_id: 'string:11', var_size: 'string:50', var_color: 'string:50', vat_description: 'string:50', is_active: 'string:11', softdeletes: softDeletes }
+    Brand: { brand_id: 'string:11', brand_name: 'string:50', brand_description: 'string:50', is_active: 'string:11', softdeletes: softDeletes }
+    Product: { prod_id: 'string:11', prod_sku: 'string:50', prod_alert_stock: 'string:11', prod_name: 'string:50', prod_image: 'string:50', prod_price_option_id: 'string:11', prod_description: 'string:50', prod_brand_id: 'string:11', prod_cat_id: 'string:11', prod_var_id: 'string:11', is_active: 'string:11', softdeletes: softDeletes }
+    PriceOption: { price_id: 'string:11', price_regular: 'string:11', price_wholesale: 'string:11' }
+    AuditTrail: { audit_id: 'string:11', audit_name: 'string:50', audit_notes: 'string:50', is_active: 'string:11', softdeletes: softDeletes }
