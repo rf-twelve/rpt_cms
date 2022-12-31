@@ -61,7 +61,7 @@ class Payment extends Component
     public function print_payment() {
         ## Call private function saveQuery
         $vData = $this->validate();
-        // $this->saveQuery();
+        $this->saveQuery();
 
         ## Save data on receipts
         $receipt = RptIssuedReceipt::create([
