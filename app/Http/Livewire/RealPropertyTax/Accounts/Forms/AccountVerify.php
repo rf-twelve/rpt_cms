@@ -285,7 +285,7 @@ class AccountVerify extends Component
             'assmt_roll_td_arp_no_prev' => $this->assmt_roll_td_arp_no_prev,
             'assmt_roll_av_prev' => $this->assmt_roll_av_prev,
             'assmt_roll_remarks' => $this->assmt_roll_remarks,
-            'assmt_roll_status' => "verified"
+            'assmt_roll_status' => 1
             ]);
         }
 

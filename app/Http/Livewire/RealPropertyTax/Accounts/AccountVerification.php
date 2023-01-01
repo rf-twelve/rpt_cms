@@ -136,7 +136,7 @@ class AccountVerification extends Component
     public function findVerifiedStatus()
     {
     return ModRptAccount::select('id')
-        ->where('rtdp_status','verified')
+        ->where('rtdp_status',1)
         ->get();
     }
     // Find Record where status is unverified

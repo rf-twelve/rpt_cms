@@ -59,7 +59,7 @@ class RptAccountImport implements ToModel, WithHeadingRow
                 'rtdp_remarks' => $row['remarks'],
                 'rtdp_directory' => $row['directory'],
                 'rtdp_payment_start' => $row['payment_start'],
-                'rtdp_status' => 'new',
+                'rtdp_status' => 0,
                 'import_by' =>  Auth::user()->firstname.' '.Auth::user()->lastname,
             ]);
     }

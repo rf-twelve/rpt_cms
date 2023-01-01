@@ -9,7 +9,7 @@
                 <div class="card-header">
 
                     <div class="row">
-                        <div class="col-12 text-center">
+                        <div class="text-center col-12">
                             <button type="button" wire:click.defer="createRecord()" class="btn btn-app">
                                 <i class="fas fa-file"></i> New
                             </button>
@@ -158,14 +158,14 @@
                     {{-- ALL Duplicates --}}
                     @if($toggleDuplicateSelected1 || $toggleDuplicateSelected2 || $toggleDuplicateSelected3 || $toggleVerified4 || $toggleUnVerified5)
                     <div class="card card-primary card-outline">
-                        <div class="card-body table-responsive p-0">
+                        <div class="p-0 card-body table-responsive">
                             <div class="text-center">
                                 <h4>ASSESSMENT ROLL - DUPLICATES</h4>
                             </div>
                             <table class="table table-hover table-bordered table-sm">
                                 <thead>
                                     <tr class="text-center text-nowrap bg-primary">
-                                        <th rowspan="3" class="text-center p-0 py-1">
+                                        <th rowspan="3" class="p-0 py-1 text-center">
                                         </th>
                                         <th>TD/ARP No.</th>
                                         <th>PIN</th>
@@ -177,12 +177,12 @@
                                     @if(!is_null($rptAccountDuplicates) || !empty($rptAccountDuplicates))
                                     @foreach ($rptAccountDuplicates as $duplicate)
                                     <tr>
-                                        <td class="no-print text-center m-0"
+                                        <td class="m-0 text-center no-print"
                                             style="padding-left: 6px;padding-right: 6px;">
                                             <button class="btn btn-sm btn-primary" data-toggle="dropdown">
                                                 <i class="fas fa-bars"></i>
                                             </button>
-                                            <div style=" border: transparent; width: 10px;" class="dropdown-menu p-0">
+                                            <div style=" border: transparent; width: 10px;" class="p-0 dropdown-menu">
 
 
                                                 <button wire:click="viewRecord({{$duplicate->id}})" href="#"
@@ -224,11 +224,11 @@
 
                     {{-- ALL Records --}}
                     <div class="card card-primary card-outline">
-                        <div class="card-body table-responsive p-0">
+                        <div class="p-0 card-body table-responsive">
                             <div class="text-center">
                                 <h4>ASSESSMENT ROLL</h4>
                             </div>
-                            <div class="row m-2">
+                            <div class="m-2 row">
                                 <div class="col-sm-4 invoice-col">
                                     <address>
                                         <strong>PROVINCE: </strong><br>
@@ -269,7 +269,7 @@
                             <table class="table table-hover table-bordered table-sm">
                                 <thead>
                                     <tr class="text-center text-nowrap bg-primary">
-                                        <th rowspan="3" class="text-center p-0 py-1">
+                                        <th rowspan="3" class="p-0 py-1 text-center">
                                         </th>
                                         <th>TD/ARP No.</th>
                                         <th>PIN</th>
@@ -289,12 +289,12 @@
                                 <tbody class="text-nowrap">
                                     @forelse ($rptAccount as $item)
                                     <tr>
-                                        <td class="no-print text-center m-0"
+                                        <td class="m-0 text-center no-print"
                                             style="padding-left: 6px;padding-right: 6px;">
                                             <button class="btn btn-sm btn-primary" data-toggle="dropdown">
                                                 <i class="fas fa-bars"></i>
                                             </button>
-                                            <div style=" border: transparent; width: 10px;" class="dropdown-menu p-0">
+                                            <div style=" border: transparent; width: 10px;" class="p-0 dropdown-menu">
                                                 <button wire:click="viewRecord({{$item->id}})"
                                                     class="dropdown-item text-info keychainify-checked"><i class="fas fa-eye"></i>
                                                     {{$item->assmt_roll_status == 'verified' ? 'View' : 'Verify'}}
@@ -357,7 +357,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                            @if ($item->assmt_roll_status == 'new')
+                                            @if ($item->assmt_roll_status == 0)
                                             <span class="right badge badge-danger">U</span>
                                             @else
                                             <span class="right badge badge-success">V</span>
@@ -389,7 +389,7 @@
         <div class="modal-dialog modal-md modal-dialog-scrollable">
             <div class=" modal-content">
                 <!-- Modal body -->
-                <div class="modal-body p-0">
+                <div class="p-0 modal-body">
                     <livewire:assessor.forms.assessment-roll-registry />
                 </div>
 

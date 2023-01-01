@@ -7,11 +7,6 @@ use App\Models\ListBarangay;
 use App\Models\ListMunicity;
 use App\Models\ListProvince;
 use App\Models\RptAccount;
-use App\Models\RptAssessedValue;
-use App\Models\RptBracket;
-use App\Models\RptPaymentRecord;
-use Illuminate\Support\Str;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
@@ -121,7 +116,7 @@ class AssessmentRollRegistry extends Component
                     'assmt_roll_td_arp_no_prev' => $vData['td_arp_no_prev'],
                     'assmt_roll_av_prev' => $vData['av_value_prev'],
                     'assmt_roll_remarks' => $vData['rtdp_remarks'],
-                    'assmt_roll_status' => 'verified',
+                    'assmt_roll_status' => 1,
                     'encoded_by' => Auth::user()->firstname.' '.Auth::user()->lastname,
                 ]);
             RptAccount::where('rpt_pin','=',$vData['rpt_pin'])
@@ -158,7 +153,7 @@ class AssessmentRollRegistry extends Component
                     'assmt_roll_td_arp_no_prev' => $vData['td_arp_no_prev'],
                     'assmt_roll_av_prev' => $vData['av_value_prev'],
                     'assmt_roll_remarks' => $vData['rtdp_remarks'],
-                    'assmt_roll_status' => 'verified',
+                    'assmt_roll_status' => 1,
                     'encoded_by' => Auth::user()->firstname.' '.Auth::user()->lastname,
                 ]);
 

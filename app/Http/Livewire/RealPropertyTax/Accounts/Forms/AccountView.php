@@ -133,7 +133,6 @@ class AccountView extends Component
                 break;
         }
 
-        $vData = $this->validate();
         switch ($vData['rtdp_payment_quarter_to']) {
             case 0.25:
                 $q_to = "Q1";
@@ -152,7 +151,7 @@ class AccountView extends Component
                 break;
         }
         $vData['rtdp_payment_covered_year'] = $vData['rtdp_payment_covered_fr'] . ' ' . $q_from . '-' . $vData['rtdp_payment_covered_to'] . ' ' . $q_to;
-        $vData['rtdp_status'] = 'verified';
+        $vData['rtdp_status'] = 1;
         $vData['encoded_by'] = Auth::user()->firstname.' '.Auth::user()->lastname;
         RptAccount::findOrFail($this->account_id)
             ->update($vData);

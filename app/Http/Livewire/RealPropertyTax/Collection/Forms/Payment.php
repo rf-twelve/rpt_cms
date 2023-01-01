@@ -157,8 +157,8 @@ class Payment extends Component
     private function saveQuery()
     {
         $vData = $this->validate();
-        dump($vData);
-        dd($this->get_data);
+        // dump($vData);
+        // dd($this->get_data);
         ## Creating payment record
         RptPaymentRecord::create([
             'pay_date' => date('Y-m-d'),

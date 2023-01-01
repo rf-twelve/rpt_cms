@@ -115,17 +115,19 @@ class Accounts extends Component
         $this->viewSearchList = 0;
         $this->account_data = RptAccount::with('assessed_values')
             ->with('payment_records')->find($id);
+        dd($this->account_data->assessed_values->sortByDesc('av_year_from')->first());
         if($this->account_data->rtdp_status != 'verified'){
             $this->dispatchBrowserEvent('swalAccountNotVerified');
         }else{
+            // dd($this->account_data);
             if (is_null($this->account_data->rtdp_payment_covered_to) || empty($this->account_data->rtdp_payment_covered_to)) {
                 $this->dispatchBrowserEvent('swalPaymentYearNotFound');
             }else{
+                $this->settingVariables();
                 $this->viewAccountInfo = 1;
                 $this->viewAssessedValues = 1;
                 $this->viewPaymentRecords = 1;
                 $this->viewTaxDue = 1;
-                $this->settingVariables();
                 $this->compute_unpaid_amount();
             }
         }
@@ -147,6 +149,7 @@ class Accounts extends Component
         $this->UnpaidAmount = $this->account_data->assessed_values->where('av_year_from','<=',$this->nextPaymentYear)->where('av_year_to','>=',$this->avYearNew)->sortBy('av_year_from');
         $this->assessedValueOld = $this->account_data->assessed_values->where('av_year_from','=',$this->avYearOld)->where('av_year_to','=',$this->avYearOld)->first();
         $this->assessedValueNew = $this->account_data->assessed_values->where('av_year_from','=',$this->avYearNew)->where('av_year_to','=',$this->avYearNew)->first();
+        // dd($this->assessedValueNew);
         ## INITIALIZE PENALTY TABLE
         $this->baseAvOld = RptPercentage::select('base')->where('from','<=',$this->avYearOld)
         ->where('to','>=',$this->avYearOld)->first();

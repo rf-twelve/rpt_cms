@@ -32,7 +32,7 @@ class RptAssessmentRollImport implements ToModel, WithHeadingRow
                 'assmt_roll_td_arp_no_prev' => $row['td_arp_prev'],
                 'assmt_roll_av_prev' => $row['av_prev'],
                 'assmt_roll_remarks' => $row['remarks'],
-                'assmt_roll_status' => 'new',
+                'assmt_roll_status' => 0,
                 'import_by' =>  Auth::user()->firstname.' '.Auth::user()->lastname,
             ]);
     }

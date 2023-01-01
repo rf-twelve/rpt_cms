@@ -89,14 +89,14 @@ class AssessmentRoll extends Component
     public function findVerifiedStatus()
     {
     return ModAssmtRollAccount::select('id')
-        ->where('assmt_roll_status','verified')
+        ->where('assmt_roll_status',1)
         ->get();
     }
     // Find Record where status is unverified
     public function findUnVerifiedStatus()
     {
     return ModAssmtRollAccount::select('id')
-        ->where('assmt_roll_status','new')->get();
+        ->where('assmt_roll_status',0)->get();
     }
 
     public function getDuplicates($value)
@@ -125,7 +125,7 @@ class AssessmentRoll extends Component
                 break;
             case 5:
                 $this->findDuplicates = ModAssmtRollAccount::select('id','assmt_roll_td_arp_no','assmt_roll_pin','assmt_roll_owner','assmt_roll_address','assmt_roll_status')
-                ->where('assmt_roll_status','new')->get();
+                ->where('assmt_roll_status',0)->get();
                 break;
             default:
                 # code...
