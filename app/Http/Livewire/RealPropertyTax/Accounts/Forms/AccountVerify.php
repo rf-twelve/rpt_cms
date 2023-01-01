@@ -238,7 +238,7 @@ class AccountVerify extends Component
     public function saveRecord()
     {
         $vData = $this->validate();
-        $vData['rtdp_status'] = 'verified';
+        $vData['rtdp_status'] = 1;
         $assessedValuesArray = [];
         // Get the quarter values
         $q_from = $this->getQuarterName($vData['rtdp_payment_quarter_fr']);

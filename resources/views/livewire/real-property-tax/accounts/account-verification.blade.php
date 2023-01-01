@@ -266,7 +266,7 @@
                                             </button>
                                             <div style=" border: transparent; width: 10px;" class="p-0 dropdown-menu">
 
-                                                @if ($item->rtdp_status == 'verified')
+                                                @if ($item->rtdp_status == 1)
                                                 <button wire:click="viewAccount({{$item->id}})" type="button"
                                                     class="dropdown-item text-info keychainify-checked">
                                                     <i class="fas fa-eye"></i> View
@@ -290,7 +290,7 @@
                                             </div>
                                         </td>
                                         <td>{{ $item->rpt_pin }}
-                                            @if ($item->rtdp_status == 'new')
+                                            @if ($item->rtdp_status == 0)
                                             <span class="badge bg-primary">N</span>
                                             @endif
                                         </td>
@@ -315,7 +315,7 @@
 
 
                                         <td>
-                                            @if ($item->rtdp_status == 'new')
+                                            @if ($item->rtdp_status == 0)
                                             <span class="right badge badge-danger">U</span>
                                             @else
                                             <span class="right badge badge-success">V</span>

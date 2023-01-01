@@ -143,7 +143,7 @@ class AccountVerification extends Component
     public function findUnVerifiedStatus()
     {
     return ModRptAccount::select('id')
-        ->where('rtdp_status','new')->get();
+        ->where('rtdp_status', 0)->get();
     }
 
     public function getDuplicates($value)
@@ -168,7 +168,7 @@ class AccountVerification extends Component
                 break;
             case 5:
                 $this->findDuplicates = ModRptAccount::select('id','rpt_pin','rpt_kind','rpt_class','rpt_td_no','rpt_arp_no','ro_name','rtdp_tc_basic','rtdp_tc_sef','rtdp_tc_penalty','rtdp_tc_total','rtdp_payment_date','rtdp_or_no','rtdp_payment_covered_year','rtdp_status',)
-                ->where('rtdp_status','new')->get();
+                ->where('rtdp_status',0)->get();
                 break;
             default:
                 # code...
@@ -231,7 +231,7 @@ class AccountVerification extends Component
             ->get();
 
         $this->rpt_duplicates =  $record->where('record_count', '>', 1)->count();
-        $this->rpt_unverified =  DB::table('rpt_accounts')->where('rtdp_status', 'new')->count();;
+        $this->rpt_unverified =  DB::table('rpt_accounts')->where('rtdp_status', 0)->count();
 
         return view('livewire.real-property-tax.accounts.account-verification')->with(([
             'rptAccountDuplicates' => $this->findDuplicates,

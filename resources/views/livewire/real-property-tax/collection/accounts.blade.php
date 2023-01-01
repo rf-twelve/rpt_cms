@@ -95,7 +95,7 @@
                                 <td>{{ $item->rpt_class }}</td>
                                 <td>{{ $item->rtdp_payment_covered_year }}</td>
                                 <td>
-                                    @if ($item->rtdp_status == 'new')
+                                    @if ($item->rtdp_status == 0)
                                     <span class="right badge badge-danger">U</span>
                                     @else
                                     <span class="right badge badge-success">V</span>

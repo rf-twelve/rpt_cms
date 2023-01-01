@@ -54,38 +54,12 @@ class AssessedValue extends Component
     {
         $assessed_value = $this->validate();
         foreach ($assessed_value['assessedValues'] as $key => $value) {
-
-            if (!is_null($value['id']) && !empty($value['id'])) {
-                $editedAV = RptAssessedValue::find($value['id']);
-                $editedAV->update($value);
-            } else {
-                RptAssessedValue::create($value);
-            }
+            RptAssessedValue::find($value['id'])->update($value);
         }
-        // dd('sss');
-        // $this->editedAVindex = null;
         $this->dispatchBrowserEvent('assessedValueClose');
         $this->emitUp('refreshLedger');
         $this->dispatchBrowserEvent('swalUpdate');
     }
-
-    // public function saveAssessedValue($av_id, $av_index)
-    // {
-    //     $assessed_value = $this->validate();
-        // $assessed_value = RptAssessedValue::where('id', $av_index)
-        //     ->select('id', 'av_year_from', 'av_year_to', 'av_value')->get()->toArray() ?? NULL;
-        // dd();
-
-    //     if (!is_null($assessed_value)) {
-    //         $editedAV = RptAssessedValue::find($av_id);
-    //         if ($editedAV) {
-    //             $editedAV->update($assessed_value['assessedValues'][$av_index]);
-    //         }
-    //     }
-    //     $this->editedAVindex = null;
-    //     $this->emitUp('refreshLedger');
-    //     $this->dispatchBrowserEvent('swalUpdate');
-    // }
 
     public function render()
     {
@@ -101,14 +75,21 @@ class AssessedValue extends Component
 
     public function addAssessedValue()
     {
-        $this->assessedValues[] = [
-            'id' => '',
-            'av_pin' => $this->rpt_pin,
-            'av_year_from' => $this->year_today,
-            'av_year_to' => $this->year_today,
-            'av_value' => 0,
-            'rpt_account_id' => $this->rpt_account_id,
-        ];
+        if(count($this->assessedValues) > 0){
+           $collected = (collect($this->assessedValues))->first();
+           RptAssessedValue::create([
+                'av_pin' => $collected['av_pin'],
+                'av_year_from' => $this->year_today,
+                'av_year_to' => $this->year_today,
+                'av_value' => 0,
+                'rpt_account_id' => $collected['rpt_account_id'],
+           ]);
+
+           $this->assessedValues = RptAssessedValue::where('av_pin',$collected['av_pin'])
+            ->get()->toArray();
+        //    dd($this->assessedValues);
+        }
+
     }
     public function removeAssessedValue($index)
     {
