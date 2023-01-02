@@ -7,10 +7,6 @@ use App\Models\RptAccount;
 use App\Models\RptFormulaTable;
 use App\Models\RptPercentage;
 use App\Models\ListBarangay;
-use App\Models\RptQuarter1;
-use App\Models\RptQuarter2;
-use App\Models\RptQuarter3;
-use App\Models\RptQuarter4;
 use App\Models\RptBracket;
 use Livewire\Component;
 
@@ -115,8 +111,17 @@ class Accounts extends Component
         $this->viewSearchList = 0;
         $this->account_data = RptAccount::with('assessed_values')
             ->with('payment_records')->find($id);
-        dd($this->account_data->assessed_values->sortByDesc('av_year_from')->first());
-        if($this->account_data->rtdp_status != 'verified'){
+        $checkForNewAv = $this->account_data->assessed_values
+            ->where('av_year_from',$this->avYearNew)->count();
+        ## CHECKING NEW AV
+        if($checkForNewAv < 1){
+            return dd('Assessed Value for new AV Year not found!');
+        }
+        ## CHECKING PENALTY PERCENTAGE
+        // $penaltyBase = RptPercentage::all();
+        // dd($penaltyBase);
+
+        if($this->account_data->rtdp_status != 1){
             $this->dispatchBrowserEvent('swalAccountNotVerified');
         }else{
             // dd($this->account_data);
@@ -429,6 +434,8 @@ class Accounts extends Component
     {
         (empty($this->search_input)) ?
             $this->dispatchBrowserEvent('swalSearchFieldEmpty') :
+            $this->avYearNew = date("Y", strtotime($this->input_date));
+            $this->avYearOld = $this->avYearNew - 1;
             $this->month_selected = strtolower(date("F", strtotime($this->input_date)));
             $this->search_record();
     }

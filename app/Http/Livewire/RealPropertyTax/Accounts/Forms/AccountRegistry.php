@@ -174,8 +174,7 @@ class AccountRegistry extends Component
     public function saveRecord()
     {
         $vData = $this->validate();
-        $vData['rtdp_status'] = 'verified';
-        $assessedValuesArray = [];
+        $vData['rtdp_status'] = 1;
 
         // dd($vData);
         // Get the quarter values

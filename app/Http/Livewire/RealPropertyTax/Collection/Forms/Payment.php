@@ -62,84 +62,8 @@ class Payment extends Component
         ## Call private function saveQuery
         $vData = $this->validate();
         $this->saveQuery();
-
-        ## Save data on receipts
-        $receipt = RptIssuedReceipt::create([
-            'prev_trn' => $this->get_data['prev_trn'],
-            'prev_date' => $this->get_data['prev_date'],
-            'prev_for' => $this->get_data['prev_for'],
-            'trn' => $vData['pay_serial_no'],
-            'date' => $vData['pay_date'],
-            'payee' => $vData['pay_payee'],
-            'province' => $this->get_data['province'],
-            'city' => $this->get_data['city'],
-            'amount' => $this->get_data['amount'],
-            'amount_words' => $vData['pay_amount_words'],
-            'is_basic' => '1',
-            'is_sef' => '1',
-            'for' => $this->get_data['for'],
-            'owner_name' => $this->get_data['owner_name'],
-            'location' => $this->get_data['location'],
-            'tdn' => $this->get_data['tdn'],
-            'rpt_account_id' => $this->get_data['rpt_account_id'],
-            'user_treasurer' => $vData['pay_treasurer'],
-            'user_deputy' => $vData['pay_deputy'],
-        ]);
-        // $receipt->receipt_datas()
-        foreach($this->get_data['bracket_computation'] as $index => $comp){
-            $receipt->receipt_datas()->create([
-                'av' => $comp['av'],
-                'td' => $comp['td'],
-                'year_no' => $comp['year_no'],
-                'label' => $comp['label'],
-                'total_td' => $comp['total_td'],
-                'penalty' => $comp['penalty'],
-                'subtotal' => $comp['subtotal'],
-            ]);
-        }
-        // dd($receipt->trn);
-
-        return redirect()->route('AF56 RECEIPT',$receipt->trn);
-
-        // dd($this->get_data);
-        // $this->saveQuery();
-        // $collect = collect($this->get_data['pr_account']['assessed_values']);
-        // dump($collect->sortBy('av_year_to')->last());
-        // dump((ListBarangay::where('index',$this->get_data['pr_account']['lp_brgy'])->first()));
-        // dump((ListMunicity::where('index',$this->get_data['pr_account']['lp_municity'])->first())->name);
-        // dump($this->get_data['pr_account']);
-        // dd($this->get_data);
-        // $dataArray = array(
-        //     'prev_trn' => '1252458',
-        //     'prev_date' => date('Y-m-d'),
-        //     'prev_for' => '3RD-4TH QUARTER 2021',
-        //     'trn' => $vData['pay_serial_no'],
-        //     'date' => $vData['pay_date'],
-        //     'payee' =>  $vData['pay_payee'],
-        //     'province' => 'MTO - Lopez, Quezon',
-        //     'city' => (ListMunicity::where('index',$this->get_data['pr_account']['lp_municity'])->first())->name ?? 'LOPEZ',
-        //     'amount' => $this->get_data['pr_amount_due'],
-        //     'amount_words' => $vData['pay_amount_words'] ?? '',
-        //     'is_basic' => 1,
-        //     'is_sef' => 1,
-        //     'for' => $this->get_data['pr_covered_year'],
-        //     'owner_name' => $this->get_data['pr_account']['ro_name'],
-        //     'computations' => $this->get_data['computations'],
-        //     'location' => (ListBarangay::where('index',$this->get_data['pr_account']['lp_brgy'])->first())->name ?? '',
-        //     'tdn' => $this->get_data['pr_account']['rpt_pin']  ?? '(Unknown)',
-        //     // 'total_av' => $this->get_data['pr_tc_basic']*100,
-        //     // 'tax_due' => $this->get_data['pr_tc_basic'],
-        //     'installment_no' => $this->get_data['pr_year_no'],
-        //     'installment_year' => $this->get_data['pr_covered_year'],
-        //     'full_payment' => $this->get_data['pr_tc_basic'],
-        //     'discount_penalty' => $discountPenalty,
-        //     'subtotal' => $subTotal,
-        //     'basic' => $subTotal,
-        //     'sef'=> $subTotal,
-        //     'grand_total'=> $subTotal*2,
-        //     'person_treas'=> 'ROSARIO MARILOU MANZANO-UY',
-        //     'person_deputy'=> $this->pay_teller,
-        // );
+        $trn = $vData['pay_serial_no'];
+        return redirect()->route('AF56 RECEIPT',$trn);
     }
 
 
@@ -157,8 +81,6 @@ class Payment extends Component
     private function saveQuery()
     {
         $vData = $this->validate();
-        // dump($vData);
-        // dd($this->get_data);
         ## Creating payment record
         RptPaymentRecord::create([
             'pay_date' => date('Y-m-d'),
@@ -184,32 +106,44 @@ class Payment extends Component
         ]);
         ## Save Reciept
         $issued_receipt = RptIssuedReceipt::create([
-            'prev_trn' => $this->get_data['pr_acccount']['rtdp_or_no'],
-            'prev_date' => $this->get_data['pr_acccount']['rtdp_payment_date'],
-            'prev_for' => $this->getPrevPaymentRecord,
-            'trn' => $this->vData['pay_serial_no'],
-            'date' => $this->vData['pay_date'],
-            'payee' => $this->vData['pay_payee'],
-            'province' => 'QUEZON',
-            'city' => 'LOPEZ',
-            'amount' => $this->pay_amount_due,
-            'amount_words' => $this->pay_amount_words,
+            'prev_trn' => $this->get_data['prev_trn'],
+            'prev_date' => $this->get_data['prev_date'],
+            'prev_for' => $this->get_data['prev_for'],
+            'trn' => $vData['pay_serial_no'],
+            'date' => $vData['pay_date'],
+            'payee' => $vData['pay_payee'],
+            'province' => $this->get_data['province'],
+            'city' => $this->get_data['city'],
+            'amount' => $this->get_data['pr_amount_due'],
+            'amount_words' => $vData['pay_amount_words'],
             'is_basic' => 1,
             'is_sef' => 1,
-            'for' => $this->get_data['pr_covered_year'],
-            'owner_name' => ['pr'],
-            'location' => '',
-            'tdn' => '',
-            'rpt_account_id' => '',
-            'user_treasurer' => '',
-            'user_deputy' => '',
+            'for' => $this->get_data['for'],
+            'owner_name' => $this->get_data['owner_name'],
+            'location' => $this->get_data['location'],
+            'tdn' => $this->get_data['tdn'],
+            'rpt_account_id' => $this->get_data['rpt_account_id'],
+            'user_treasurer' => $vData['pay_treasurer'],
+            'user_deputy' => $vData['pay_deputy'],
         ]);
+        ## STORING ISSUED RECEIPT DATA
+        foreach($this->get_data['bracket_computation'] as $index => $comp){
+            $issued_receipt->receipt_datas()->create([
+                'av' => $comp['av'],
+                'td' => $comp['td'],
+                'year_no' => $comp['year_no'],
+                'label' => $comp['label'],
+                'total_td' => $comp['total_td'],
+                'penalty' => $comp['penalty'],
+                'subtotal' => $comp['subtotal'],
+            ]);
+        }
         ## Update for RPT Account
         RptAccount::findOrFail($this->rpt_account_id)
             ->update([
                 'rtdp_or_no' => $vData['pay_serial_no'],
-                'rtdp_payment_date' => date('Y-m-d'),
-                'rtdp_payment_covered_year' => $this->get_data['pr_covered_year'],
+                'rtdp_payment_date' => $vData['pay_date'],
+                'rtdp_payment_covered_year' => $this->get_data['for'],
                 'rtdp_payment_covered_fr' => $this->get_data['pr_year_first'],
                 'rtdp_payment_covered_to' => $this->get_data['pr_year_last'],
                 'rtdp_payment_quarter_fr' => $this->get_data['pr_quarter_first'],
@@ -221,12 +155,12 @@ class Payment extends Component
             ->update([
                 'issued_qty' => ($this->booklet->issued_qty == 0)
                         ? 1 : $this->booklet->issued_qty + 1,
-                'issued_serial_from' => ($this->booklet->begin_serial_fr == 0)
-                        ? $vData['serial_no'] : $this->booklet->issued_serial_from,
-                'issued_serial_to' => $vData['serial_no'],
+                'issued_serial_fr' => ($this->booklet->begin_serial_fr == 0)
+                        ? $vData['pay_serial_no'] : $this->booklet->issued_serial_fr,
+                'issued_serial_to' => $vData['pay_serial_no'],
                 'end_qty' => ($this->booklet->end_qty > 0)
                         ? $this->booklet->begin_qty - 1 : 0,
-                'end_serial_from' => $this->booklet->begin_serial_from + 1,
+                'end_serial_fr' => $this->booklet->begin_serial_fr + 1,
                 'amount' => $this->booklet->amount + $this->pay_amount_due,
             ]);
         }

@@ -40,15 +40,10 @@ class Formula extends Component
 
     public function saveFormulaValue($id, $index)
     {
-        $formula = $this->validate();
-        // $assessed_value = RptAssessedValue::where('id', $av_index)
-        //     ->select('id', 'av_year_from', 'av_year_to', 'av_value')->get()->toArray() ?? NULL;
-        if (!is_null($formula)) {
-            $quarter_data = RptFormulaTable::find($id);
-            if ($quarter_data) {
-                $quarter_data->update($formula['formula_values'][$index]);
-            }
-        }
+        $validated = $this->validate();
+        RptPercentage::find($id)
+            ->update($validated['formula_values'][$index]);
+        $this->formula_values = RptPercentage::get()->toArray();
         $this->editedFormulaIndex = null;
         $this->dispatchBrowserEvent('swalUpdate');
     }

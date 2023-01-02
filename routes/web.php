@@ -14,7 +14,7 @@ use App\Http\Livewire\RealPropertyTax\Collection\Forms\Receipt;
 // Route::get('sample1',Receipt::class)->name('sample1');
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/accountable-form-56/{id}', [App\Http\Controllers\ReportController::class, 'af_56'])->name('AF56');
+// Route::get('/accountable-form-56/{id}', [App\Http\Controllers\ReportController::class, 'af_56'])->name('AF56');
 Route::get('/home/export', [App\Http\Controllers\HomeController::class, 'export']);
 
 Auth::routes();

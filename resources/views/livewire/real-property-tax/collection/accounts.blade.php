@@ -326,7 +326,7 @@
                                         @endif
                                     </td>
                                     <td class="text-center">{{$item->pay_remarks}}</td>
-                                    <td class="text-center">{{(App\Models\User::find($item->pay_teller))->firstname ?? 'Unknown'}}</td>
+                                    <td class="text-center">{{$item->pay_teller}}</td>
 
                                 </tr>
                                 <?php $total_payment_records = $total_payment_records + $item['pr_amount_due'] ?>
