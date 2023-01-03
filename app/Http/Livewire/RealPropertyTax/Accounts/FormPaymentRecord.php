@@ -108,6 +108,7 @@ class FormPaymentRecord extends Component
     public function savePaymentRecord()
     {
         $this->vdata = $this->validate();
+        ## Another update
         dd($this->vdata);
         if (empty($this->uid)) {
             $this->vdata['pay_status'] = 1;
