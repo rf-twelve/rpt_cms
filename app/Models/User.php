@@ -47,7 +47,7 @@ class User extends Authenticatable
         return (User::find($id))->firstname;
     }
 
-    public function getAllUser(){
+    public function getAllUserAttributes(){
         return User::get();
     }
 

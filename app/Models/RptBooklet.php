@@ -14,4 +14,6 @@ class RptBooklet extends Model
     protected $casts = [
         'id' => 'integer',
     ];
+
+    public function users(){ return $this->belongsTo(User::class, 'user_id');}
 }

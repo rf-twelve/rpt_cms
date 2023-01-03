@@ -47,7 +47,7 @@
                             <th colspan="3" class="bg-purple">Issued</th>
                             <th colspan="3" class="bg-indigo">Ending Balance</th>
                             {{-- <th rowspan="3">Amount</th> --}}
-                            <th rowspan="3">Officer Name</th>
+                            <th rowspan="3">Teller Name</th>
                         </tr>
                         <tr class="">
                             <th rowspan="2" style="width:6%" class="bg-info">Qty.</th>
@@ -74,13 +74,13 @@
                                         class="btn btn-sm btn-primary"><i class="fas fa-check"></i></a>
                                 </td>
                                 <td>
-                                    <input wire:model.defer="addNewData.form_name" style="width:100%" type="text" class="form-control">
+                                    <input wire:model.defer="addNewData.form" style="width:100%" type="text" class="form-control">
                                 </td>
                                 <td>
                                     <input wire:model.defer="addNewData.begin_qty" style="width:100%" type="number" class="form-control">
                                 </td>
                                 <td>
-                                    <input wire:model.defer="addNewData.begin_serial_from" style="width:100%" type="number" class="form-control">
+                                    <input wire:model.defer="addNewData.begin_serial_fr" style="width:100%" type="number" class="form-control">
                                 </td>
                                 <td>
                                     <input wire:model.defer="addNewData.begin_serial_to" style="width:100%" type="number" class="form-control">
@@ -89,7 +89,7 @@
                                     <input wire:model.defer="addNewData.issued_qty" style="width:100%" type="number" class="form-control">
                                 </td>
                                 <td>
-                                    <input wire:model.defer="addNewData.issued_serial_from" style="width:100%" type="number" class="form-control">
+                                    <input wire:model.defer="addNewData.issued_serial_fr" style="width:100%" type="number" class="form-control">
                                 </td>
                                 <td>
                                     <input wire:model.defer="addNewData.issued_serial_to" style="width:100%" type="number" class="form-control">
@@ -98,7 +98,7 @@
                                     <input wire:model.defer="addNewData.end_qty" style="width:100%" type="number" class="form-control">
                                 </td>
                                 <td>
-                                    <input wire:model.defer="addNewData.end_serial_from" style="width:100%" type="number" class="form-control">
+                                    <input wire:model.defer="addNewData.end_serial_fr" style="width:100%" type="number" class="form-control">
                                 </td>
                                 <td>
                                     <input wire:model.defer="addNewData.end_serial_to" style="width:100%" type="number" class="form-control">
@@ -106,7 +106,7 @@
                                 <td>
                                     <select wire:model.defer="addNewData.user_id" class="custom-select">
                                         <option value="">Please Select</option>
-                                        @foreach (App\Models\User::getAllUser() as $item)
+                                        @foreach (App\Models\User::get() as $item)
                                         <option value="{{ $item->id }}">{{ $item->firstname.' '.$item->lastname }}</option>
                                         @endforeach
                                     </select>
@@ -126,9 +126,9 @@
                             </td>
                             <td>
                                 @if ($editedIndex !== $index)
-                                {{$item['form_name']}}
+                                {{$item['form']}}
                                 @else
-                                <input wire:model.defer="bookletsData.{{$index}}.form_name" style="width:100px" type="text"
+                                <input wire:model.defer="bookletsData.{{$index}}.form" style="width:100px" type="text"
                                     class="form-control">
                                 @endif
                             </td>
@@ -142,9 +142,9 @@
                             </td>
                             <td>
                                 @if ($editedIndex !== $index)
-                                {{$item['begin_serial_from']}}
+                                {{$item['begin_serial_fr']}}
                                 @else
-                                <input wire:model.defer="bookletsData.{{$index}}.begin_serial_from" style="width:100px" type="text"
+                                <input wire:model.defer="bookletsData.{{$index}}.begin_serial_fr" style="width:100px" type="text"
                                     class="form-control">
                                 @endif
                             </td>
@@ -166,9 +166,9 @@
                             </td>
                             <td>
                                 @if ($editedIndex !== $index)
-                                {{$item['issued_serial_from']}}
+                                {{$item['issued_serial_fr']}}
                                 @else
-                                <input wire:model.defer="bookletsData.{{$index}}.issued_serial_from" style="width:100px" type="text"
+                                <input wire:model.defer="bookletsData.{{$index}}.issued_serial_fr" style="width:100px" type="text"
                                     class="form-control">
                                 @endif
                             </td>
@@ -190,9 +190,9 @@
                             </td>
                             <td>
                                 @if ($editedIndex !== $index)
-                                {{$item['end_serial_from']}}
+                                {{$item['end_serial_fr']}}
                                 @else
-                                <input wire:model.defer="bookletsData.{{$index}}.end_serial_from" style="width:100px" type="text"
+                                <input wire:model.defer="bookletsData.{{$index}}.end_serial_fr" style="width:100px" type="text"
                                     class="form-control">
                                 @endif
                             </td>
@@ -214,10 +214,15 @@
                             </td> --}}
                             <td>
                                 @if ($editedIndex !== $index)
-                                {{ App\Models\User::findUserByID($item['user_id'])}}
+                                {{ $item['users']['firstname'].' '.$item['users']['lastname']}}
+                                {{-- {{ App\Models\User::findUserByID($item['user_id'])}} --}}
                                 @else
-                                <input wire:model.defer="bookletsData.{{$index}}.user_id" style="width:100px" type="text"
-                                    class="form-control">
+                                <select wire:model.defer="bookletsData.{{$index}}.user_id" class="custom-select">
+                                    <option value="">Please Select</option>
+                                    @foreach (App\Models\User::get() as $item)
+                                    <option value="{{ $item->id }}">{{ $item->firstname.' '.$item->lastname }}</option>
+                                    @endforeach
+                                </select>
                                 @endif
                             </td>
                         </tr>
