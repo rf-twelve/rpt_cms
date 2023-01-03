@@ -108,24 +108,21 @@ class FormPaymentRecord extends Component
     {
         $vdata = $this->validate();
 
-
-
         ## Convert number value into quarter label
         $vdata['pay_quarter_from'] = $this->convertQuarter($vdata['pay_quarter_from']);
         $vdata['pay_quarter_to'] = $this->convertQuarter($vdata['pay_quarter_to']);
-        $vdata['pay_covered_year'] = $vdata['pay_year_from']
-            .' '.$vdata['pay_quarter_from']
-            .' - '.$vdata['pay_year_to']
-            .' '.$vdata['pay_quarter_to'];
+        $vdata['pay_covered_year'] = $this->getPaymentCovered($vdata);
+        $this->vdata['pay_status'] = 1;
 
-        #### Another update
+        ## If ID is empty, Records will created
         if (empty($this->uid)) {
-            $this->vdata['pay_status'] = 1;
-            RptPaymentRecord::create($this->vdata);
+            RptPaymentRecord::create($vdata);
+
+        ## If ID exist, Records will updated
         } else {
             RptPaymentRecord::findOrFail($this->uid)->update($vdata);
             if($this->uid == $this->latestPaymentId){
-                $this->updateRptAccount($this->vdata['rpt_account_id']);
+                $this->updateRptAccount($vdata);
             }
         }
         $this->dispatchBrowserEvent('paymentRecordClose');
@@ -134,22 +131,22 @@ class FormPaymentRecord extends Component
         $this->reset();
     }
 
-    public function updateRptAccount($id)
+    public function updateRptAccount($vdata)
     {
-        RptAccount::find($id)->update([
-            'rtdp_tc_basic' => $this->vdata['pay_basic'],
-            'rtdp_tc_sef' => $this->vdata['pay_sef'],
-            'rtdp_tc_penalty' => $this->vdata['pay_penalty'],
-            'rtdp_tc_total' => ($this->vdata['pay_basic']+$this->vdata['pay_penalty'])*2,
-            'rtdp_or_no' => $this->vdata['pay_serial_no'],
-            'rtdp_payment_date' => $this->vdata['pay_date'],
-            'rtdp_payment_covered_year' => $this->vdata['pay_covered_year'],
-            'rtdp_payment_covered_fr' => $this->vdata['pay_year_from'],
-            'rtdp_payment_covered_to' => $this->vdata['pay_year_to'],
-            'rtdp_payment_quarter_fr' => $this->vdata['pay_quarter_from'],
-            'rtdp_payment_quarter_to' => $this->vdata['pay_quarter_to'],
-            'rtdp_remarks' => $this->vdata['pay_remarks'],
-            'rtdp_directory' => $this->vdata['pay_directory'],
+        RptAccount::find($vdata['rpt_account_id'])->update([
+            'rtdp_tc_basic' => $vdata['pay_basic'],
+            'rtdp_tc_sef' => $vdata['pay_sef'],
+            'rtdp_tc_penalty' => $vdata['pay_penalty'],
+            'rtdp_tc_total' => ($vdata['pay_basic']+$vdata['pay_penalty'])*2,
+            'rtdp_or_no' => $vdata['pay_serial_no'],
+            'rtdp_payment_date' => $vdata['pay_date'],
+            'rtdp_payment_covered_year' => $vdata['pay_covered_year'],
+            'rtdp_payment_covered_fr' => $vdata['pay_year_from'],
+            'rtdp_payment_covered_to' => $vdata['pay_year_to'],
+            'rtdp_payment_quarter_fr' => $vdata['pay_quarter_from'],
+            'rtdp_payment_quarter_to' => $vdata['pay_quarter_to'],
+            'rtdp_remarks' => $vdata['pay_remarks'],
+            'rtdp_directory' => $vdata['pay_directory'],
         ]);
     }
 
@@ -202,10 +199,12 @@ class FormPaymentRecord extends Component
         }
     }
     public function computeChange(){
-        $this->pay_cash_display = number_format($this->pay_cash,2);
+        $this->pay_cash_display = ($this->pay_cash)
+            ? number_format($this->pay_cash,2,'.',',') : 0.00;
         if (!empty($this->pay_amount_due) && !empty($this->pay_cash)) {
             $this->pay_change = $this->pay_cash - $this->pay_amount_due;
-            $this->pay_change_display = $this->pay_change;
+            $this->pay_change_display = ($this->pay_change)
+            ? number_format($this->pay_change,2,'.',',') : 0.00;
         }
     }
 
@@ -233,6 +232,11 @@ class FormPaymentRecord extends Component
         $this->pay_payee = '';
         $this->pay_status = '';
         $this->rpt_account_id = '';
+    }
+
+    private function getPaymentCovered($data){
+        return $data['pay_year_from'].' '.$data['pay_quarter_from']
+            .' - '.$data['pay_year_to'].' '.$data['pay_quarter_to'];
     }
 
     public function convertQuarter($value)

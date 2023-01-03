@@ -292,14 +292,15 @@
                                     @endif
                                 </td>
                                 <td>
-                                    @if ($value['pay_total'] == 0)
+                                    @if ($value['pay_amount_due'] == 0)
                                         &nbsp -
                                     @else
-                                        @if (strpos($value['pay_total'], ',') !== false)
-                                        {{'P '.$value['pay_total']}}
+                                        {{'P '.number_format($value['pay_amount_due'], 2, '.', ',')}}
+                                        {{-- @if (strpos($value['pay_amount_due'], ',') !== false)
+                                        {{'P '.$value['pay_amount_due']}}
                                         @else
-                                        {{'P '.number_format($value['pay_total'], 2, '.', ',')}}
-                                        @endif
+                                        {{'P '.number_format($value['pay_amount_due'], 2, '.', ',')}}
+                                        @endif --}}
                                     @endif
                                 </td>
                                 <td>{{$value['pay_serial_no']}}</td>
@@ -309,7 +310,8 @@
                                 <td>{{$value['pay_covered_year']}}</td>
                                 <td>{{$value['pay_directory']}}</td>
                                 <td>{{$value['pay_remarks']}}</td>
-                                <td>{{(App\Models\User::find($value['pay_teller']))->firstname ?? '(Unknown)'}}</td>
+                                <td>{{$value['pay_teller'] ?? '(Unknown)'}}</td>
+                                {{-- <td>{{(App\Models\User::find($value['pay_teller']))->firstname ?? '(Unknown)'}}</td> --}}
                             </tr>
                             @empty
 
