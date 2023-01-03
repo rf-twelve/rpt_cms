@@ -108,14 +108,15 @@ class FormPaymentRecord extends Component
     public function savePaymentRecord()
     {
         $this->vdata = $this->validate();
-        if ($this->uid) {
+        dd($this->vdata);
+        if (empty($this->uid)) {
+            $this->vdata['pay_status'] = 1;
+            RptPaymentRecord::create($this->vdata);
+        } else {
             RptPaymentRecord::findOrFail($this->uid)->update($this->vdata);
             if($this->uid == $this->latestPaymentId){
                 $this->updateRptAccount($this->vdata['rpt_account_id']);
             }
-        } else {
-            $this->vdata['pay_status'] = 1;
-            RptPaymentRecord::create($this->vdata);
         }
         $this->dispatchBrowserEvent('paymentRecordClose');
         $this->emitUp('refreshLedger');
