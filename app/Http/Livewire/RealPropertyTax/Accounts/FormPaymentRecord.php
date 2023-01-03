@@ -104,15 +104,10 @@ class FormPaymentRecord extends Component
         $this->setPaymentRecord($record);
         $this->dispatchBrowserEvent('paymentRecordOpen');
     }
-
-    ###################################################
-    ## This is sample update for this file ############
-    ###################################################
-
     public function savePaymentRecord()
     {
         $this->vdata = $this->validate();
-        ## Another update
+        #### Another update
         dd($this->vdata);
         if (empty($this->uid)) {
             $this->vdata['pay_status'] = 1;

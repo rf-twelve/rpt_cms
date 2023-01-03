@@ -188,13 +188,13 @@
                         </td>
                     </tr>
                     @endforeach
-                    <tr>
+                    {{-- <tr>
                         <td colspan="4">
                             <button class="btn btn-sm btn-primary" wire:click.prevent="addAssessedValue()">
                                 <i class="fas fa-plus"></i> Add AV
                             </button>
                         </td>
-                    </tr>
+                    </tr> --}}
                 </tbody>
             </table>
             @if ($display_pr)
