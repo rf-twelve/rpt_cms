@@ -71,7 +71,7 @@
         <div class="col-sm-7">
             <div class="row">
                 <div class="col-6">
-                    <input wire:model.debounce.500ms='pay_year_from' type="text"
+                    <input wire:model.debounce.500ms='pay_year_from' type="number"
                         class="form-control @error('pay_year_from') is-invalid @enderror">
                 </div>
                 <div class="col-6">
@@ -94,7 +94,7 @@
         <div class="col-sm-7">
             <div class="row">
                 <div class="col-6">
-                    <input wire:model.debounce.500ms='pay_year_to' type="text"
+                    <input wire:model.debounce.500ms='pay_year_to' type="number"
                         class="form-control @error('pay_year_to') is-invalid @enderror">
                 </div>
                 <div class="col-6">
@@ -116,7 +116,7 @@
     <div class="form-group row">
         <label class="col-sm-5 col-form-label">Basic :</label>
         <div class="col-sm-7">
-            <input wire:model.debounce.500ms='pay_basic' type="text"
+            <input wire:model.debounce.500ms='pay_basic' type="number"
             class="form-control @error('pay_basic') is-invalid @enderror">
             @error('pay_basic')<span class="text-danger">{{ $message }}</span>@enderror
         </div>
@@ -124,7 +124,7 @@
     <div class="form-group row">
         <label class="col-sm-5 col-form-label">Sef :</label>
         <div class="col-sm-7">
-            <input wire:model.debounce.500ms='pay_sef' type="text"
+            <input wire:model.debounce.500ms='pay_sef' type="number"
             class="form-control @error('pay_sef') is-invalid @enderror">
             @error('pay_sef')<span class="text-danger">{{ $message }}</span>@enderror
         </div>
@@ -132,7 +132,7 @@
     <div class="form-group row">
         <label class="col-sm-5 col-form-label">Penalty :</label>
         <div class="col-sm-7">
-            <input wire:model.debounce.500ms='pay_penalty' type="text"
+            <input wire:model.debounce.500ms='pay_penalty' type="number"
             class="form-control @error('pay_penalty') is-invalid @enderror">
             @error('pay_penalty')<span class="text-danger">{{ $message }}</span>@enderror
         </div>
@@ -140,7 +140,7 @@
     <div class="form-group row">
         <label class="col-sm-5 col-form-label">Cash :</label>
         <div class="col-sm-7">
-            <input wire:model.debounce.500ms='pay_cash' type="text"
+            <input wire:model.debounce.500ms='pay_cash' type="number"
             class="form-control @error('pay_cash') is-invalid @enderror">
             @error('pay_cash')<span class="text-danger">{{ $message }}</span>@enderror
         </div>
@@ -149,7 +149,7 @@
     <div class="form-group row">
         <label class="col-sm-5 col-form-label">Amount Due :</label>
         <div class="text-right col-sm-7">
-            <h5>P {{ $pay_amount_due_display ?? '0.00' }}</h5>
+            <h5>P {{ number_format($pay_amount_due_display,2,'.',',') ?? '0.00' }}</h5>
         </div>
     </div>
     <div class="form-group row">

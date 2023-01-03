@@ -106,14 +106,24 @@ class FormPaymentRecord extends Component
     }
     public function savePaymentRecord()
     {
-        $this->vdata = $this->validate();
+        $vdata = $this->validate();
+
+
+
+        ## Convert number value into quarter label
+        $vdata['pay_quarter_from'] = $this->convertQuarter($vdata['pay_quarter_from']);
+        $vdata['pay_quarter_to'] = $this->convertQuarter($vdata['pay_quarter_to']);
+        $vdata['pay_covered_year'] = $vdata['pay_year_from']
+            .' '.$vdata['pay_quarter_from']
+            .' - '.$vdata['pay_year_to']
+            .' '.$vdata['pay_quarter_to'];
+
         #### Another update
-        dd($this->vdata);
         if (empty($this->uid)) {
             $this->vdata['pay_status'] = 1;
             RptPaymentRecord::create($this->vdata);
         } else {
-            RptPaymentRecord::findOrFail($this->uid)->update($this->vdata);
+            RptPaymentRecord::findOrFail($this->uid)->update($vdata);
             if($this->uid == $this->latestPaymentId){
                 $this->updateRptAccount($this->vdata['rpt_account_id']);
             }
@@ -187,14 +197,14 @@ class FormPaymentRecord extends Component
     public function computeAmountDue(){
 
         if (!empty($this->pay_basic) && !empty($this->pay_sef) && !empty($this->pay_penalty)) {
-            $this->pay_amount_due = number_format(($this->pay_basic + $this->pay_penalty)*2, 2);
+            $this->pay_amount_due = ($this->pay_basic + $this->pay_penalty)*2;
             $this->pay_amount_due_display = $this->pay_amount_due;
         }
     }
     public function computeChange(){
         $this->pay_cash_display = number_format($this->pay_cash,2);
         if (!empty($this->pay_amount_due) && !empty($this->pay_cash)) {
-            $this->pay_change = number_format($this->pay_cash - $this->pay_amount_due, 2);
+            $this->pay_change = $this->pay_cash - $this->pay_amount_due;
             $this->pay_change_display = $this->pay_change;
         }
     }
@@ -225,9 +235,18 @@ class FormPaymentRecord extends Component
         $this->rpt_account_id = '';
     }
 
+    public function convertQuarter($value)
+    {
+        switch ($value) {
+            case 0.25: return 'Q1';
+            case 0.50: return 'Q2';
+            case 0.75: return 'Q3';
+            default: return 'Q4'; break;
+        }
+    }
+
     public function render()
     {
-        // $this->compute();
         return view('livewire.real-property-tax.accounts.form-payment-record');
     }
 }
