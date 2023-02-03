@@ -21,6 +21,7 @@ class Payment extends Component
     public $pay_date;
     public $pay_payee;
     public $pay_teller;
+    public $pay_teller_name;
     public $pay_serial_no;
     public $pay_fund;
     public $pay_type;
@@ -28,6 +29,7 @@ class Payment extends Component
     public $pay_year_to;
     public $pay_quarter_from;
     public $pay_quarter_to;
+    public $pay_covered_year;
     public $pay_year_no;
     public $pay_basic;
     public $pay_sef;
@@ -51,7 +53,7 @@ class Payment extends Component
 
     public function openPaymentEvent($data)
     {
-        // dd('Open Payment');
+        // dd($data);
         $this->reset();
         $this->dataSet($data);
         $this->get_data = $data;
@@ -88,6 +90,7 @@ class Payment extends Component
             'pay_year_to' => $this->pay_year_to,
             'pay_quarter_from' => $this->pay_quarter_from,
             'pay_quarter_to' => $this->pay_quarter_to,
+            'pay_covered_year' => $this->pay_covered_year,
             'pay_basic' => $this->pay_basic,
             'pay_sef' => $this->pay_sef,
             'pay_penalty' => $this->pay_penalty,
@@ -116,6 +119,7 @@ class Payment extends Component
             'city' => $this->get_data['city'],
             'amount' => $this->get_data['pr_amount_due'],
             'amount_words' => $vData['pay_amount_words'],
+            'pay_type' => $this->pay_type,
             'is_basic' => 1,
             'is_sef' => 1,
             'for' => $this->get_data['for'],
@@ -125,6 +129,7 @@ class Payment extends Component
             'rpt_account_id' => $this->get_data['rpt_account_id'],
             'user_treasurer' => $vData['pay_treasurer'],
             'user_deputy' => $vData['pay_deputy'],
+            'user_id' => $this->pay_teller,
         ]);
         ## STORING ISSUED RECEIPT DATA
         foreach($this->get_data['bracket_computation'] as $index => $comp){
@@ -155,12 +160,16 @@ class Payment extends Component
             ->update([
                 'issued_qty' => ($this->booklet->issued_qty == 0)
                         ? 1 : $this->booklet->issued_qty + 1,
-                'issued_serial_fr' => ($this->booklet->begin_serial_fr == 0)
+                'issued_serial_fr' => ($this->booklet->issued_serial_fr == 0)
                         ? $vData['pay_serial_no'] : $this->booklet->issued_serial_fr,
                 'issued_serial_to' => $vData['pay_serial_no'],
                 'end_qty' => ($this->booklet->end_qty > 0)
-                        ? $this->booklet->begin_qty - 1 : 0,
-                'end_serial_fr' => $this->booklet->begin_serial_fr + 1,
+                        ? $this->booklet->end_qty - 1 : 0,
+                'end_serial_fr' => ($this->booklet->end_qty > 1)
+                        ? $vData['pay_serial_no'] + 1 : 0,
+                'end_serial_to' => ($this->booklet->end_qty > 1)
+                        ? $this->booklet->end_serial_to : 0,
+                'payment_mode' => $this->pay_type,
                 'amount' => $this->booklet->amount + $this->pay_amount_due,
             ]);
         }
@@ -200,15 +209,18 @@ class Payment extends Component
 
     private function dataSet($data)
     {
+        $teller = Auth::user();
         $this->pay_fund = 'general';
         $this->pay_type = 'cash';
         $this->pay_date = date('Y-m-d');
-        $this->pay_teller = Auth::user()->firstname.' '.Auth::user()->lastname;
+        $this->pay_teller = $teller->id;
+        $this->pay_teller_name = $teller->firstname.' '.$teller->lastname;
         $this->pay_serial_no = $this->getSerialNumber();
         $this->pay_year_from = $data['pr_year_first'];
         $this->pay_year_to = $data['pr_year_last'];
         $this->pay_quarter_from = $data['pr_quarter_first'];
         $this->pay_quarter_to = $data['pr_quarter_last'];
+        $this->pay_covered_year = $data['for'];
         $this->pay_year_no = $data['pr_year_no'];
         $this->pay_basic = $data['pr_tc_basic'];
         $this->pay_sef = $data['pr_tc_sef'];
@@ -216,7 +228,7 @@ class Payment extends Component
         $this->pay_amount_due = $data['pr_amount_due'];
         $this->pay_cash = '';
         $this->pay_change = '';
-        $this->pay_remarks = '';
+        $this->pay_remarks = $data['for'];
         $this->pay_directory = '';
         $this->pay_status = 1;
         $this->pay_treasurer = 'HERMES A. ARGANTE';

@@ -321,6 +321,14 @@
             showConfirmButton: true,
             })
     });
+    window.addEventListener('swalNewAssessedValueNotFound', event => {
+        Swal.fire({
+            icon: 'info',
+            title: 'New Assessed Value Not Found!',
+            text: 'Please check assessed values!',
+            showConfirmButton: true,
+            })
+    });
     window.addEventListener('swalUnpaidYearNoValue', event => {
         Swal.fire({
             icon: 'info',

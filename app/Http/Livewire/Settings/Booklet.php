@@ -32,6 +32,10 @@ class Booklet extends Component
         ]);
     }
 
+    // public function updatedAddNewData.''.Form(){
+    //     dd('ss');
+    // }
+
     public function updated($propertyName)
     {
         $this->validateOnly($propertyName);

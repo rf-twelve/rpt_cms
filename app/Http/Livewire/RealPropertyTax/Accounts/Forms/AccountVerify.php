@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\RealPropertyTax\Accounts\Forms;
 
+use App\Http\Livewire\Traits\WithConvertValue;
 use App\Models\AssmtRollAccount;
 use App\Models\ListBarangay;
 use App\Models\ListMunicity;
@@ -15,6 +16,8 @@ use Illuminate\Support\Str;
 
 class AccountVerify extends Component
 {
+    use WithConvertValue;
+
     // 1.Set Variables
     public $account_id;
     public $uid;
@@ -154,7 +157,6 @@ class AccountVerify extends Component
         $this->dispatchBrowserEvent('accountVerifyClose');
     }
 
-
     // RPT ACCCCOUNT
     public function verifyRecordEvent($data)
     {
@@ -214,42 +216,14 @@ class AccountVerify extends Component
         $this->search_input = '';
     }
 
-    // Get the quarter value
-    public function getQuarterName($value){
-        switch ($value) {
-            case 0.25:
-                $q_from = "Q1";
-                break;
-            case 0.50:
-                $q_from = "Q2";
-                break;
-            case 0.75:
-                $q_from = "Q3";
-                break;
-            case 1:
-                $q_from = "Q4";
-                break;
-            default:
-                $q_from = "";
-                break;
-        }
-    }
-
     public function saveRecord()
     {
         $vData = $this->validate();
         $vData['rtdp_status'] = 1;
-        $assessedValuesArray = [];
-        // Get the quarter values
-        $q_from = $this->getQuarterName($vData['rtdp_payment_quarter_fr']);
-        $q_to = $this->getQuarterName($vData['rtdp_payment_quarter_to']);
 
-        if ($q_from) {
-            $vData['rtdp_payment_covered_year'] = $vData['rtdp_payment_covered_fr'] . ' ' . $q_from . '-' . $vData['rtdp_payment_covered_to'] . ' ' . $q_to;
-        } else {
-            $vData['rtdp_payment_covered_year'] = $vData['rtdp_payment_covered_fr'] . '-' . $vData['rtdp_payment_covered_to'] . ' ' . $q_to;
-        }
-
+        $vData['rtdp_payment_covered_year']
+            = $vData['rtdp_payment_covered_fr'].' '.$this->convertQuarter($vData['rtdp_payment_quarter_fr']).
+            '-'. $vData['rtdp_payment_covered_to'].' '.$this->convertQuarter($vData['rtdp_payment_quarter_to']);
         if ($this->uid) {
             $vData['id'] = $this->uid;
             RptAccount::findOrFail($this->uid)->update($vData);
@@ -327,8 +301,8 @@ class AccountVerify extends Component
         $this->rtdp_payment_covered = $data['rtdp_payment_covered_year'];
         $this->rtdp_payment_covered_fr = $data['rtdp_payment_covered_fr'];
         $this->rtdp_payment_covered_to = $data['rtdp_payment_covered_to'];
-        $this->rtdp_payment_quarter_fr = is_null($data['rtdp_payment_quarter_fr']) ? 0 : $data['rtdp_payment_quarter_fr'];
-        $this->rtdp_payment_quarter_to = is_null($data['rtdp_payment_quarter_to']) ? 0 : $data['rtdp_payment_quarter_to'];
+        $this->rtdp_payment_quarter_fr = is_null($data['rtdp_payment_quarter_fr']) ? 1 : $data['rtdp_payment_quarter_fr'];
+        $this->rtdp_payment_quarter_to = is_null($data['rtdp_payment_quarter_to']) ? 1 : $data['rtdp_payment_quarter_to'];
         $this->rtdp_remarks = $data['rtdp_remarks'];
         $this->rtdp_directory = $data['rtdp_directory'];
         $this->rtdp_payment_start = $data['rtdp_payment_start'];
@@ -362,9 +336,9 @@ class AccountVerify extends Component
             'pay_date' => $data['rtdp_payment_date'],
             'pay_year_from' => $data['rtdp_payment_covered_fr'],
             'pay_year_to' => $data['rtdp_payment_covered_to'],
-            'pay_quarter_from' => is_null($data['rtdp_payment_quarter_fr']) ? 0 : $data['rtdp_payment_quarter_fr'],
-            'pay_quarter_to' => is_null($data['rtdp_payment_quarter_to']) ? 0 : $data['rtdp_payment_quarter_to'],
-            'pay_covered_year' => $data['rtdp_payment_covered_to'] - $data['rtdp_payment_covered_fr'] + 1,
+            'pay_quarter_from' => is_null($data['rtdp_payment_quarter_fr']) ? 1 : $data['rtdp_payment_quarter_fr'],
+            'pay_quarter_to' => is_null($data['rtdp_payment_quarter_to']) ? 1 : $data['rtdp_payment_quarter_to'],
+            'pay_covered_year' => $data['rtdp_payment_covered_year'],
             'pay_basic' => $data['rtdp_tc_basic'],
             'pay_sef' => $data['rtdp_tc_sef'],
             'pay_penalty' => $data['rtdp_tc_penalty'],

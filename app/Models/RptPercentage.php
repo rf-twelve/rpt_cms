@@ -8,13 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class RptPercentage extends Model
 {
     use HasFactory;
-    protected $fillable = [
-        'from',
-        'to',
-        'count',
-        'base',
-        'value',
-    ];
+    protected $guarded = [];
 
     protected $casts = [
         'id' => 'integer',

@@ -229,7 +229,7 @@
             <span style="">TOTAL:</span>
         </div>
         <div class="row-9" style="margin-left:830px; width: 92px;text-align:right;">
-            <span>P {{ number_format($initial_total,2,'.',',') }}</span>
+            <span>P {{ number_format($receipt->amount,2,'.',',') }}</span>
         </div>
         {{-- Tenth Row --}}
         <div class="row-10" style="margin-left:692px;width: 200px;text-align:center;">

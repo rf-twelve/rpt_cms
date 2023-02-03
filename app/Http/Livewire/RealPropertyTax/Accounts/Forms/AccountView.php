@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\RealPropertyTax\Accounts\Forms;
 
+use App\Http\Livewire\Traits\WithConvertValue;
 use App\Models\ListBarangay;
 use App\Models\ListMunicity;
 use App\Models\ListProvince;
@@ -11,6 +12,7 @@ use Livewire\Component;
 
 class AccountView extends Component
 {
+    use WithConvertValue;
     public $account_id;
     public $rpt_pin;
     public $rpt_kind;
@@ -115,42 +117,9 @@ class AccountView extends Component
     {
         // dd(Auth::user()->firstname.' '.Auth::user()->lastname);
         $vData = $this->validate();
-        switch ($vData['rtdp_payment_quarter_fr']) {
-            case 0.25:
-                $q_from = "Q1";
-                break;
-            case 0.50:
-                $q_from = "Q2";
-                break;
-            case 0.75:
-                $q_from = "Q3";
-                break;
-            case 1:
-                $q_from = "Q4";
-                break;
-            default:
-                $q_from = "";
-                break;
-        }
-
-        switch ($vData['rtdp_payment_quarter_to']) {
-            case 0.25:
-                $q_to = "Q1";
-                break;
-            case 0.50:
-                $q_to = "Q2";
-                break;
-            case 0.75:
-                $q_to = "Q3";
-                break;
-            case 1:
-                $q_to = "Q4";
-                break;
-            default:
-                $q_to = "";
-                break;
-        }
-        $vData['rtdp_payment_covered_year'] = $vData['rtdp_payment_covered_fr'] . ' ' . $q_from . '-' . $vData['rtdp_payment_covered_to'] . ' ' . $q_to;
+        $vData['rtdp_payment_covered_year']
+             = $vData['rtdp_payment_covered_fr'].' '.$this->convertQuarter($vData['rtdp_payment_quarter_fr']).
+            '-'. $vData['rtdp_payment_covered_to'].' '.$this->convertQuarter($vData['rtdp_payment_quarter_to']);
         $vData['rtdp_status'] = 1;
         $vData['encoded_by'] = Auth::user()->firstname.' '.Auth::user()->lastname;
         RptAccount::findOrFail($this->account_id)

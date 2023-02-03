@@ -310,7 +310,7 @@
                                 <td>{{$value['pay_covered_year']}}</td>
                                 <td>{{$value['pay_directory']}}</td>
                                 <td>{{$value['pay_remarks']}}</td>
-                                <td>{{$value['pay_teller'] ?? '(Unknown)'}}</td>
+                                <td>{{App\Models\User::find($value['pay_teller'])->firstname ?? $value['pay_teller']}}</td>
                                 {{-- <td>{{(App\Models\User::find($value['pay_teller']))->firstname ?? '(Unknown)'}}</td> --}}
                             </tr>
                             @empty

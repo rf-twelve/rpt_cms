@@ -12,7 +12,7 @@
                 <input wire:model='search_input' style="width:140px;" type="search" class="form-control"
                     placeholder="Type keywords...">
                 <div class="input-group-append">
-                    <button  wire:click='search_record()' type="button" class="btn btn-primary">
+                    <button wire:click='searchRecord()' type="button" class="btn btn-primary">
                         <i class="fas fa-search"></i>
                     </button>
                 </div>
@@ -29,7 +29,7 @@
                     placeholder="Type TD or ARP Number">
                 <div class="mr-2 input-group-append">
                     <div class="input-group-text">
-                        <a wire:click.prevent='date_set()' href="#"><i class="fas fa-check"></i>Set</a>
+                        <a wire:click.prevent='setDate()' href="#"><i class="fas fa-check"></i>Set</a>
                     </div>
                 </div>
             </div>
@@ -40,7 +40,7 @@
     <div class="row">
         @if ($viewSearchList)
        {{-- search list --}}
-        @if(!is_null($rptAccountSearch) || !empty($rptAccountSearch))
+        @if(!is_null($foundRecords) || !empty($foundRecords))
         <div class="col-12">
             <div class="card card-primary card-outline">
                 <div class="p-0 card-body table-responsive">
@@ -73,7 +73,7 @@
                             </tr>
                         </thead>
                         <tbody class="text-nowrap">
-                            @forelse ($rptAccountSearch as $item)
+                            @forelse ($foundRecords as $item)
                             <tr>
                                 <td>{{ $item->rpt_pin }}</td>
                                 <td>{{ $item->rpt_td_no }}</td>
@@ -209,7 +209,7 @@
                                 <tbody>
                                     <tr class="bg-secondary">
                                         {{-- {{dd($account_data->assessed_values->count());}} --}}
-                                        @forelse ($assessed_values as $item)
+                                        @forelse ($account_data->assessed_values as $item)
                                         @if ($item->av_value != 0)
                                         <td class="p-0 text-center
                                                         @if ($loop->last)
@@ -287,7 +287,7 @@
 
                                 </tr>
                                 <?php $total_payment_records  = 0; ?>
-                                @forelse ($payment_records as $key => $item)
+                                @forelse ($account_data->payment_records as $key => $item)
                                 <tr>
                                     <td class="text-center">{{$item->pay_date}}</td>
                                     <td class="text-center">
@@ -368,8 +368,8 @@
                                     <label class="custom-control-label" for="cSwitch1">CBT</label>
                                 </div>
                                 <div class="custom-control custom-switch custom-switch-off-white custom-switch-on-warning">
-                                    <input wire:click="payOption()" type="checkbox"
-                                    class="custom-control-input" id="cSwitch2" {{($pay_option) ? 'checked':''}}>
+                                    <input wire:click="switchComputeResult()" type="checkbox"
+                                    class="custom-control-input" id="cSwitch2" {{($resultSelection) ? 'checked':''}}>
                                     <label class="custom-control-label" for="cSwitch2">Pay Option</label>
                                 </div>
                             </div>

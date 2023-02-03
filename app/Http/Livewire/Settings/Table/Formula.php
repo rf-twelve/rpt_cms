@@ -2,7 +2,6 @@
 
 namespace App\Http\Livewire\Settings\Table;
 
-use App\Models\RptFormulaTable;
 use App\Models\RptPercentage;
 use Carbon\Carbon;
 use Livewire\Component;

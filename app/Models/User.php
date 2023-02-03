@@ -15,19 +15,7 @@ class User extends Authenticatable
     // use HasPermissionsTrait;
     use HasFactory, Notifiable, HasRolesAndPermissions;
 
-    protected $fillable = [
-        'firstname',
-        'lastname',
-        'username',
-        'password',
-        'password_copy',
-        'email',
-        'birthdate',
-        'address',
-        'contact',
-        'photo',
-        'active',
-    ];
+    protected $guarded = [];
 
     protected $hidden = [
         'password',
@@ -42,9 +30,23 @@ class User extends Authenticatable
     {
         return $this->hasMany(RptBooklet::class);
     }
+    public function trans_records()
+    {
+        return $this->hasMany(RptPaymentRecord::class,'pay_teller');
+    }
 
-    public function findUserByID($id){
-        return (User::find($id))->firstname;
+    public function issued_receipts()
+    {
+        return $this->hasMany(RptIssuedReceipt::class,'user_id');
+    }
+
+    public function getUserFullnameAttributes(){
+        $user = User::find($this->id);
+        return $user->firstname.' '.$user->lastname;
+    }
+
+    public function findUserByID(){
+        return (User::find($this->id))->firstname;
     }
 
     public function getAllUserAttributes(){

@@ -16,7 +16,7 @@ class ReportPDF extends Controller
 
         $dataArray = $output['aParam'];
 
-        dd($dataArray);
+        // dd($dataArray);
         // For File name
         $today = date("Y-m-d");
 
@@ -26,7 +26,7 @@ class ReportPDF extends Controller
 
         $data = collect($temp)->merge($dataArray)->toArray();
 
-        // dd($data);
+        dd($data);
 
         // $pdf = Pdf::loadView('pdf.'.'sample_table', $data);
         $pdf = Pdf::loadView('pdf.'.$dataArray['form'], $data);
@@ -50,21 +50,13 @@ class ReportPDF extends Controller
                 break;
 
             case 'collection_deposit_report':
-                return $this->setCollectionAndDeposit($data['pr_id']);
+                return $this->setCollectionAndDeposit($data['officer'], $data['from'], $data['to']);
                 break;
 
             default:
                 # code...
                 break;
         }
-
-        // if (!empty($data['relation_table'])) {
-        //     return collect(DB::table($data['model'])
-        //         ->join($data['relation_table'], $data['model'].'id', '=', $data['relation_id'])
-        //         ->with('relation_table')->find($data['id']))->toArray();
-        // } else {
-        //     return collect(DB::table($data['model'])->find($data['id']))->toArray();
-        // }
 
     }
 

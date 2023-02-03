@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\RealPropertyTax\Accounts\Forms;
 
+use App\Http\Livewire\Traits\WithConvertValue;
 use App\Models\RptAccount;
 use App\Models\RptAssessedValue;
 use App\Models\RptBracket;
@@ -14,6 +15,7 @@ use Illuminate\Support\Str;
 
 class AccountRegistry extends Component
 {
+    use WithConvertValue;
     // 1.Set Variables
     public $account_id;
     public $uid;
@@ -150,42 +152,14 @@ class AccountRegistry extends Component
         $this->emitSelf('refreshForm');
     }
 
-    // Get the quarter value
-    public function getQuarterName($value){
-        switch ($value) {
-            case 0.25:
-                $q_from = "Q1";
-                break;
-            case 0.50:
-                $q_from = "Q2";
-                break;
-            case 0.75:
-                $q_from = "Q3";
-                break;
-            case 1:
-                $q_from = "Q4";
-                break;
-            default:
-                $q_from = "";
-                break;
-        }
-    }
-
     public function saveRecord()
     {
         $vData = $this->validate();
         $vData['rtdp_status'] = 1;
 
-        // dd($vData);
-        // Get the quarter values
-        $q_from = $this->getQuarterName($vData['rtdp_payment_quarter_fr']);
-        $q_to = $this->getQuarterName($vData['rtdp_payment_quarter_to']);
-
-        if ($q_from) {
-            $vData['rtdp_payment_covered_year'] = $vData['rtdp_payment_covered_fr'] . ' ' . $q_from . '-' . $vData['rtdp_payment_covered_to'] . ' ' . $q_to;
-        } else {
-            $vData['rtdp_payment_covered_year'] = $vData['rtdp_payment_covered_fr'] . '-' . $vData['rtdp_payment_covered_to'] . ' ' . $q_to;
-        }
+        $vData['rtdp_payment_covered_year']
+        = $vData['rtdp_payment_covered_fr'].' '.$this->convertQuarter($vData['rtdp_payment_quarter_fr']).
+        '-'. $vData['rtdp_payment_covered_to'].' '.$this->convertQuarter($vData['rtdp_payment_quarter_to']);
 
         if ($vData['uid']) {
             // $data = RptAccount::findOrFail($vData['uid'])->update($vData);
@@ -196,7 +170,7 @@ class AccountRegistry extends Component
             }
             $this->setRPTAccountFields($vData);
         } else {
-            $data = RptAccount::create($vData);
+            RptAccount::create($vData);
         }
         $this->dispatchBrowserEvent('accountRegistryClose');
         $this->dispatchBrowserEvent('swalSuccess');
@@ -265,34 +239,31 @@ class AccountRegistry extends Component
     public function setPaymentRecordFields($data)
     {
         RptPaymentRecord::create([
-            'pr_rpt_pin' => $this->rpt_pin,
-            'pr_td_no' => $this->rpt_td_no,
-            'pr_year_from' => $data['rtdp_payment_covered_fr'],
-            'pr_year_to' => $data['rtdp_payment_covered_to'],
-            'pr_year_no' => $data['rtdp_payment_covered_to'] - $data['rtdp_payment_covered_fr'] + 1,
-            'td_basic' => $data['rtdp_td_basic'],
-            'td_sef' => $data['rtdp_td_sef'],
-            'td_penalty' => $data['rtdp_td_penalty'],
-            'td_total' => $data['rtdp_td_basic'] + $data['rtdp_td_sef'] +  $data['rtdp_td_penalty'],
-            'tc_basic' => $data['rtdp_tc_basic'],
-            'tc_sef' => $data['rtdp_tc_sef'],
-            'tc_penalty' => $data['rtdp_tc_penalty'],
-            'tc_total' => $data['rtdp_tc_basic'] + $data['rtdp_tc_sef'] +  $data['rtdp_tc_penalty'],
-            'pr_amount_due' => $data['rtdp_td_total'] + $data['rtdp_tc_total'],
-            'pr_amount_paid' => 0,
-            'pr_amount_balance' => 0,
-            'pr_quarter_status' => 4,
-            'pr_cash' => 0,
-            'pr_change' => 0,
-            'pr_or_no' => $data['rtdp_or_no'],
-            'pr_pay_date' => $data['rtdp_payment_date'],
-            'pr_directory' => $data['rtdp_directory'],
-            'pr_remarks' => $data['rtdp_remarks'],
-            'pr_teller' => '',
-            'pr_status' => 'paid',
-            'rpt_account_id' => $this->account_id,
+            'pay_date' => $data['rtdp_payment_date'],
+            'pay_year_from' => $data['rtdp_payment_covered_fr'],
+            'pay_year_to' => $data['rtdp_payment_covered_to'],
+            'pay_quarter_from' => is_null($data['rtdp_payment_quarter_fr']) ? 1 : $data['rtdp_payment_quarter_fr'],
+            'pay_quarter_to' => is_null($data['rtdp_payment_quarter_to']) ? 1 : $data['rtdp_payment_quarter_to'],
+            'pay_covered_year' => $data['rtdp_payment_covered_year'],
+            'pay_basic' => $data['rtdp_tc_basic'],
+            'pay_sef' => $data['rtdp_tc_sef'],
+            'pay_penalty' => $data['rtdp_tc_penalty'],
+            // 'pay_total' => $data['rtdp_tc_basic'] + $data['rtdp_tc_sef'] +  $data['rtdp_tc_penalty'],
+            'pay_amount_due' => $data['rtdp_td_total'] + $data['rtdp_tc_total'],
+            'pay_cash' => $data['rtdp_td_total'] + $data['rtdp_tc_total'],
+            'pay_change' => 0,
+            'pay_fund' => 'general',
+            'pay_type' => 'cash',
+            'pay_serial_no' => $data['rtdp_or_no'],
+            'pay_directory' => $data['rtdp_directory'],
+            'pay_remarks' => $data['rtdp_remarks'],
+            'pay_teller' => null,
+            'pay_payee' => '',
+            'pay_status' => 1,
+            'rpt_account_id' => $this->uid,
         ]);
     }
+
     public function addAssessedValue()
     {
         $this->avDataArray[] = [

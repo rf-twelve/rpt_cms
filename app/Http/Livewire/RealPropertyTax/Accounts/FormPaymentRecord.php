@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\RealPropertyTax\Accounts;
 
+use App\Http\Livewire\Traits\WithConvertValue;
 use App\Models\RptAccount;
 use App\Models\RptAssessedValue;
 use App\Models\RptPaymentRecord;
@@ -11,6 +12,7 @@ use Livewire\Component;
 
 class FormPaymentRecord extends Component
 {
+    use WithConvertValue;
     public $latestPaymentId = '';
     public $vdata = [];
     public $uid;
@@ -109,8 +111,8 @@ class FormPaymentRecord extends Component
         $vdata = $this->validate();
 
         ## Convert number value into quarter label
-        $vdata['pay_quarter_from'] = $this->convertQuarter($vdata['pay_quarter_from']);
-        $vdata['pay_quarter_to'] = $this->convertQuarter($vdata['pay_quarter_to']);
+        // $vdata['pay_quarter_from'] = $this->convertQuarter($vdata['pay_quarter_from']);
+        // $vdata['pay_quarter_to'] = $this->convertQuarter($vdata['pay_quarter_to']);
         $vdata['pay_covered_year'] = $this->getPaymentCovered($vdata);
         $this->vdata['pay_status'] = 1;
 
@@ -235,18 +237,10 @@ class FormPaymentRecord extends Component
     }
 
     private function getPaymentCovered($data){
-        return $data['pay_year_from'].' '.$data['pay_quarter_from']
-            .' - '.$data['pay_year_to'].' '.$data['pay_quarter_to'];
-    }
-
-    public function convertQuarter($value)
-    {
-        switch ($value) {
-            case 0.25: return 'Q1';
-            case 0.50: return 'Q2';
-            case 0.75: return 'Q3';
-            default: return 'Q4'; break;
-        }
+        return $data['pay_year_from']
+            .' '.$this->convertQuarter($data['pay_quarter_from'])
+            .' - '.$data['pay_year_to']
+            .' '.$this->convertQuarter($data['pay_quarter_to']);
     }
 
     public function render()

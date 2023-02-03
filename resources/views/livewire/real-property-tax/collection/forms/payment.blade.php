@@ -19,7 +19,7 @@
         </div>
         <div class="col-6 form-group">
             <label>TELLER NAME :</label>
-            <label class="form-control">{{$pay_teller}}</label>
+            <label class="form-control">{{$pay_teller_name}}</label>
         </div>
         <div class="col-6 form-group">
             <label>Treasurer :</label>
