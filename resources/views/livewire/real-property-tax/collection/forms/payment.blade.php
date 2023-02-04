@@ -4,7 +4,9 @@
             <label>FUND :</label>
             <select wire:model.defer='pay_fund' class="form-control @error('pay_fund') is-invalid @enderror">
                 <option value="">Select Type of Fund</option>
-                <option value="general">General Fund</option>
+                @foreach (\App\Models\ListFund::get() as $fund)
+                    <option value="{{ $fund->id }}">{{ $fund->name }}</option>
+                @endforeach
             </select>
             @error('pay_fund')<span class="text-danger">{{ $message }}</span>@enderror
         </div>

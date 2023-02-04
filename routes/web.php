@@ -54,6 +54,7 @@ Route::middleware('auth')->group(function () {
     Route::get('settings/address', [App\Http\Controllers\MainController::class, 'settings_address'])->name('settings_address');
     Route::get('settings/booklets', [App\Http\Controllers\MainController::class, 'settings_booklets'])->name('settings_booklets');
     Route::get('settings/taxtables', [App\Http\Controllers\MainController::class, 'settings_taxtables'])->name('settings_taxtables');
+    Route::get('settings/forms', [App\Http\Controllers\MainController::class, 'settings_form'])->name('settings_forms');
     Route::get('settings/users', [App\Http\Controllers\MainController::class, 'settings_users'])->name('settings_users');
     //Settings Import
     Route::post('settings/address/import_regions', [App\Http\Livewire\Settings\Address\Region::class, 'import_regions'])->name('import_regions');

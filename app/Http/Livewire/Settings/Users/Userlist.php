@@ -36,6 +36,7 @@ class Userlist extends Component
     public function saveRecord()
     {
         $vData = $this->validate();
+        dd($vData);
         $roleData = role::findOrFail($vData['roles']);
         $PermissionData = Permission::findOrFail($vData['permissions']);
 

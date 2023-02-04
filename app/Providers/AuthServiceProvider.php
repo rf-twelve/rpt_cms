@@ -62,6 +62,9 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('manage-tax_table', function (User $user) {
             return $user->hasPermission('manage-tax_table') == 'manage-tax_table';
         });
+        Gate::define('manage-forms', function (User $user) {
+            return $user->hasPermission('manage-forms') == 'manage-forms';
+        });
         Gate::define('manage-user', function (User $user) {
             return $user->hasPermission('manage-user') == 'manage-user';
         });

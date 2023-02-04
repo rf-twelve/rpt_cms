@@ -151,7 +151,9 @@
                 <li class="nav-item keychainify-checked">
                     <a href="#" class="nav-link
                     {{request()->is('settings/address')
+                    ||request()->is('settings/booklets')
                     ||request()->is('settings/taxtables')
+                    ||request()->is('settings/forms')
                     ||request()->is('settings/users')
                     ? 'active' : ''}}">
                         <i class="nav-icon fas fa-cogs"></i>
@@ -160,8 +162,11 @@
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
-                    <ul class="nav nav-treeview" style="display:{{ request()->is('settings/address')
+                    <ul class="nav nav-treeview" style="display:
+                        {{ request()->is('settings/address')
+                        || request()->is('settings/booklets')
                         || request()->is('settings/taxtables')
+                        || request()->is('settings/forms')
                         || request()->is('settings/users')
                         ? 'block' : 'none' }}">
                         @can('manage-address')
@@ -191,6 +196,16 @@
                                 ? 'active' : ''}}">
                                 <i class="fas fa-table nav-icon"></i>
                                 <p>Tax Table</p>
+                            </a>
+                        </li>
+                        @endcan
+                        @can('manage-forms')
+                        <li class="nav-item">
+                            <a href="{{route('settings_forms')}}" class="nav-link
+                                {{ request()->is('settings/forms')
+                                ? 'active' : ''}}">
+                                <i class="fas fa-table nav-icon"></i>
+                                <p>Forms</p>
                             </a>
                         </li>
                         @endcan
