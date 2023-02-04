@@ -10,7 +10,7 @@ use Livewire\Component;
 
 class Userlist extends Component
 {
-    public $uid, $firstname, $lastname, $username, $password, $roles, $permissions;
+    public $uid = '', $firstname, $lastname, $username, $password, $roles, $permissions;
     protected $listeners = [
         'usersRefresh' => '$refresh',
         'editRecord' => 'editRecordEvent',
@@ -36,21 +36,22 @@ class Userlist extends Component
     public function saveRecord()
     {
         $vData = $this->validate();
-        dd($vData);
-        $roleData = role::findOrFail($vData['roles']);
-        $PermissionData = Permission::findOrFail($vData['permissions']);
 
-        if (empty($vData['uid'])) {
-            $vData['id'] = $vData['uid'];
-            $vData['password'] = Hash::make($this->password);
-            $vData['password_copy'] = $this->password;
-            $vData['active'] = 1;
-            $userData = User::create($vData);
-            $userData->roles()->attach($roleData);
-            $userData->permissions()->attach($PermissionData);
+        if (!is_null($this->uid) && !empty($this->uid)) {
+        ## UPDATE USER IF USER ID EXISTED
+            $user = User::findOrFail($vData['uid']);
+            $user->update([
+                'firstname' => $vData['firstname'],
+                'lastname' => $vData['lastname'],
+                'username' => $vData['username'],
+                'password' => Hash::make($vData['password']),
+                'password_copy' => $vData['password'],
+            ]);
+            $user->roles()->sync($vData['roles']);
+            $user->permissions()->sync($vData['permissions']);
         } else {
-            $data = User::findOrFail($vData['uid']);
-            $data->update([
+        ## CREATE NEW USER IF USER ID IS EMPTY OR NULL
+            $user = User::create([
                 'firstname' => $vData['firstname'],
                 'lastname' => $vData['lastname'],
                 'username' => $vData['username'],
@@ -58,13 +59,12 @@ class Userlist extends Component
                 'password_copy' => $vData['password'],
                 'active' => 1,
             ]);
-            $data->roles()->sync($roleData);
-            $data->permissions()->sync($PermissionData);
+            $user->roles()->attach($vData['roles']);
+            $user->permissions()->attach($vData['permissions']);
         }
-        $this->taxtable_fields = false;
-        $this->emit('usersRefresh');
         $this->dispatchBrowserEvent('usersListClose');
         $this->dispatchBrowserEvent('swalSuccess');
+        return redirect()->route('settings_users');
     }
 
     public function editRecordEvent($id)
@@ -93,7 +93,7 @@ class Userlist extends Component
         $this->password = $data->password_copy;
         $this->roles = count($data->roles) ? $data->roles[0]->id : null;
         $this->permissions = $permissionsArray;
-        $this->active = $data->active;
+        // $this->active = $data->active;
     }
 
     public function closeRecord()
