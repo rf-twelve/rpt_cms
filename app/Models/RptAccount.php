@@ -18,6 +18,10 @@ class RptAccount extends Model
 
     public function payment_records(){return $this->hasMany(RptPaymentRecord::class);}
 
+    public function getTellerNameAttribute(){
+        return (User::find($this->pay_teller))->firstname ?? $this->pay_teller;
+    }
+
     public function rpt_accounts_with_assessed_values_and_payment_records()
     {
         RptAccount::with('assessed_values','payment_records')->where('rtdp_status','verified')->get();

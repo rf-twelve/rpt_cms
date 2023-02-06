@@ -326,7 +326,7 @@
                                         @endif
                                     </td>
                                     <td class="text-center">{{$item->pay_remarks}}</td>
-                                    <td class="text-center">{{$item->pay_teller}}</td>
+                                    <td class="text-center">{{$item->TellerName}}</td>
 
                                 </tr>
                                 <?php $total_payment_records = $total_payment_records + $item['pr_amount_due'] ?>
@@ -385,6 +385,7 @@
                                     <td class="text-center" rowspan="2">BRACKET</td>
                                     <td class="text-center" rowspan="2">YEAR</td>
                                     <td class="text-center" colspan="3">TAX DUE</td>
+                                    <td class="text-center" rowspan="2">CBT</td>
                                     <td class="text-center" colspan="3">PENALTY</td>
                                     <td class="text-center" style="width:170px" rowspan="2">TOTAL AMOUNT DUE </td>
                                     {{-- <td class="text-center"></td> --}}
@@ -401,6 +402,7 @@
                                 @if ($payment_dues)
                                 @forelse ($payment_dues as $key => $item)
                                 <tr class="{{($item['status'] == 2)  ? '':'bg-gray'}}" >
+                                    {{-- IF STATUS IS TRUE AND CBT IS FALSE --}}
                                     @if ($item['status'] == 2 && $cbt == false)
                                         <td style="width:4px;" class="p-2 text-center bg-white">
                                             <div class="custom-control custom-checkbox">
@@ -436,23 +438,34 @@
                                             {{'P '.number_format($item['td_total'], 2, '.', ',')}}
                                             @endif
                                         </td>
-                                        <td>
+                                        <td style="width:4px;" class="p-2 text-center bg-white">
+                                            <div class="custom-control custom-checkbox">
+                                                <input wire:click="checkCBT({{$item['count']}})"
+                                                class="custom-control-input" type="checkbox" id="cbt-{{$item['count']}}"
+                                                {{($item['cbt_year'] == 1 ? 'checked' : '')}}>
+                                                <label for="cbt-{{$item['count']}}" class="custom-control-label"></label>
+                                            </div>
+                                        </td>
+                                        <td class="{{($item['cbt_year'] == 1)  ? 'bg-gray' : ''}}">
                                             @if (strpos($item['pen_basic'], ',') !== false)
                                             {{'P '.$item['pen_basic']}}
+                                            @elseif($item['cbt_year'] == 1){{ "-" }}
                                             @else
                                             {{'P '.number_format($item['pen_basic'], 2, '.', ',')}}
                                             @endif
                                         </td>
-                                        <td>
+                                        <td class="{{($item['cbt_year'] == 1)  ? 'bg-gray' : ''}}">
                                             @if (strpos($item['pen_sef'], ',') !== false)
                                             {{'P '.$item['pen_sef']}}
+                                            @elseif($item['cbt_year'] == 1){{ "-" }}
                                             @else
                                             {{'P '.number_format($item['pen_sef'], 2, '.', ',')}}
                                             @endif
                                         </td>
-                                        <td>
+                                        <td class="{{($item['cbt_year'] == 1)  ? 'bg-gray' : ''}}">
                                             @if (strpos($item['pen_total'], ',') !== false)
                                             {{'P '.$item['pen_total']}}
+                                            @elseif($item['cbt_year'] == 1){{ "-" }}
                                             @else
                                             {{'P '.number_format($item['pen_total'], 2, '.', ',')}}
                                             @endif
@@ -464,6 +477,7 @@
                                             {{'P '.number_format($item['amount_due'], 2, '.', ',')}}
                                             @endif
                                         </td>
+                                    {{-- IF STATUS IS TRUE AND CBT IS TRUE --}}
                                     @elseif($item['status'] == 2 && $cbt == true)
                                         <td style="width:4px;" class="p-2 text-center bg-white">
                                             <div class="custom-control custom-checkbox">
@@ -499,6 +513,13 @@
                                             {{'P '.number_format($item['td_total'], 2, '.', ',')}}
                                             @endif
                                         </td>
+                                        <td style="width:4px;" class="bg-secondary">
+                                            <div class="custom-control custom-checkbox">
+                                                <input wire:click="uncheckCBT({{$item['count']}})"
+                                                class="custom-control-input" type="checkbox" id="cbt-{{$item['count']}}" checked>
+                                                <label for="cbt-{{$item['count']}}" class="custom-control-label"></label>
+                                            </div>
+                                        </td>
                                         <td class="bg-secondary"> - </td>
                                         <td class="bg-secondary"> - </td>
                                         <td class="bg-secondary"> - </td>
@@ -509,7 +530,7 @@
                                             {{'P '.number_format($item['td_total'], 2, '.', ',')}}
                                             @endif
                                         </td>
-
+                                    {{-- IF STATUS IS FALSE CBT SHOULD ALSO FALSE --}}
                                     @else
                                         <td style="width:4px;" class="p-2 text-center bg-white">
                                             <div class="custom-control custom-checkbox">
@@ -530,13 +551,14 @@
                                         <td>-</td>
                                         <td>-</td>
                                         <td>-</td>
+                                        <td>-</td>
                                     @endif
                                 </tr>
                                 @empty
                                 @endforelse
                                 @endif
                                 <tr>
-                                    <td colspan="9" class="bg-primary" style="width:170px">
+                                    <td colspan="10" class="bg-primary" style="width:170px">
                                         TOTAL
                                     </td>
                                     <td>

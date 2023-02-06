@@ -23,6 +23,7 @@ class Accounts extends Component
     ## ACCOUNT VARIABLE
     public $account_data;
     public $foundRecords;
+    // public $cbt_year = ;
     public $tempTaxDues = [];
 
 
@@ -161,7 +162,7 @@ class Accounts extends Component
                 // $newComputation[$c]['quarter']=$value['quarter_value'];
                 $newComputation[$c]['av']=$value['value'];
                 $newComputation[$c]['td_total']= $value['td_total'];
-                $newComputation[$c]['pen_total']= $value['pen_total'];
+                $newComputation[$c]['pen_total']= ($value['cbt_year'] == true) ? 0 : $value['pen_total'];
                 $c++;
             }
 
@@ -215,12 +216,18 @@ class Accounts extends Component
         $total_tc_sef = 0;
         $total_tc_penalty = 0;
         $temp_basic_penalty = 0;
+        // dd($taxDue);
             foreach ($taxDue as $key => $value) {
                 if ($value['status'] == 2) {
                     $total_tc_basic = $total_tc_basic + $value['td_basic'];
                     $total_tc_sef = $total_tc_sef + $value['td_sef'];
-                    $total_tc_penalty = $total_tc_penalty + $value['pen_total'];
-                    $temp_basic_penalty = $temp_basic_penalty + ($value['temp_basic_penalty']*2);
+                    if($value['cbt_year'] == true){
+                        $total_tc_penalty = $total_tc_penalty + 0;
+                        $temp_basic_penalty = $temp_basic_penalty + 0;
+                    }else{
+                        $total_tc_penalty = $total_tc_penalty + $value['pen_total'];
+                        $temp_basic_penalty = $temp_basic_penalty + ($value['temp_basic_penalty']*2);
+                    }
                     $total_amount_due = $total_amount_due + $value['amount_due'];
                 }
             }
@@ -324,6 +331,13 @@ class Accounts extends Component
                 }
                 $newTaxDue[$key] = $value;
             }
+        } elseif($is35 == 0.70) {
+            foreach ($taxDue as $key => $value) {
+                if($value['count'] == $id){
+                    $value['status'] = 0;
+                }
+                $newTaxDue[$key] = $value;
+            }
         } else {
             foreach ($taxDue as $key => $value) {
                 if($value['count'] >= $id){
@@ -338,6 +352,31 @@ class Accounts extends Component
         $this->tempTaxDues = $this->payment_due_temp;
         $this->payment_set($this->tempTaxDues);
     }
+
+      ## TOGGLE CBR PER YEAR
+      public function checkCBT($id)
+      {
+          $taxDue = $this->tempTaxDues;
+          $newTaxDue = [];
+          foreach ($taxDue as $key => $value) {
+              if ($value['count'] == $id) {
+                  $value['cbt_year'] = !$value['cbt_year'];
+                  if ($value['cbt_year']) {
+                    $value['amount_due'] = ($value['td_total']);
+                    $value['temp_basic_penalty'] = ($value['td_total']);
+                  } else {
+                    $value['amount_due'] = ($value['td_total'] + $value['pen_total']);
+                    $value['temp_basic_penalty'] = ($value['td_total'] + $value['pen_total']);
+                  }
+              }
+              $newTaxDue[$key] = $value;
+          }
+        //   dd($newTaxDue);
+          $this->payment_due_temp = $newTaxDue;
+          $this->tempTaxDues = $this->payment_due_temp;
+          $this->emitSelf('refreshComponent');
+          $this->payment_set($this->tempTaxDues);
+      }
 
     public function open_payment()
     {
@@ -399,6 +438,7 @@ class Accounts extends Component
                 $group_by_year[$count]['temp_basic_penalty'] = round($value->sum('temp_basic_penalty'),2);
                 $group_by_year[$count]['amount_due'] = $value->sum('amount_due');
                 $group_by_year[$count]['status'] = 2;
+                $group_by_year[$count]['cbt_year'] = 0;
                 $count++;
             }
         }

@@ -3,16 +3,14 @@
 namespace App\Http\Livewire\Settings;
 
 use App\Models\RptBooklet;
-use App\Models\User;
-use Illuminate\Http\Request;
 use Livewire\Component;
 
 class Booklet extends Component
 {
     public $showAddValue = false;
     public $editedIndex = null;
-    public $bookletsData = [];
-    public $addNewData = [
+    public $booklets_data = [];
+    public $new_data = [
             'form' => '',
             'begin_qty' => '',
             'begin_serial_fr' => '',
@@ -28,11 +26,11 @@ class Booklet extends Component
     public function render()
     {
         return view('livewire.settings.booklet', [
-            'booklets' => $this->bookletsData,
+            'booklets' => $this->booklets_data,
         ]);
     }
 
-    // public function updatedAddNewData.''.Form(){
+    // public function updatednew_data.''.Form(){
     //     dd('ss');
     // }
 
@@ -47,17 +45,17 @@ class Booklet extends Component
     }
 
     public function rules() { return [
-        'bookletsData.'.$this->editedIndex.'.form' => ['required'],
-        'bookletsData.'.$this->editedIndex.'.begin_qty' => ['required','numeric'],
-        'bookletsData.'.$this->editedIndex.'.begin_serial_fr' => ['required','numeric'],
-        'bookletsData.'.$this->editedIndex.'.begin_serial_to' => ['required','numeric'],
-        'bookletsData.'.$this->editedIndex.'.issued_qty' => ['sometimes', 'numeric'],
-        'bookletsData.'.$this->editedIndex.'.issued_serial_fr' => ['sometimes', 'numeric'],
-        'bookletsData.'.$this->editedIndex.'.issued_serial_to' => ['sometimes', 'numeric'],
-        'bookletsData.'.$this->editedIndex.'.end_qty' => ['sometimes', 'numeric'],
-        'bookletsData.'.$this->editedIndex.'.end_serial_fr' => ['sometimes', 'numeric'],
-        'bookletsData.'.$this->editedIndex.'.end_serial_to' => ['sometimes', 'numeric'],
-        'bookletsData.'.$this->editedIndex.'.user_id' => ['required'],
+        'booklets_data.'.$this->editedIndex.'.form' => ['required'],
+        'booklets_data.'.$this->editedIndex.'.begin_qty' => ['required','numeric'],
+        'booklets_data.'.$this->editedIndex.'.begin_serial_fr' => ['required','numeric'],
+        'booklets_data.'.$this->editedIndex.'.begin_serial_to' => ['required','numeric'],
+        'booklets_data.'.$this->editedIndex.'.issued_qty' => ['sometimes', 'numeric'],
+        'booklets_data.'.$this->editedIndex.'.issued_serial_fr' => ['sometimes', 'numeric'],
+        'booklets_data.'.$this->editedIndex.'.issued_serial_to' => ['sometimes', 'numeric'],
+        'booklets_data.'.$this->editedIndex.'.end_qty' => ['sometimes', 'numeric'],
+        'booklets_data.'.$this->editedIndex.'.end_serial_fr' => ['sometimes', 'numeric'],
+        'booklets_data.'.$this->editedIndex.'.end_serial_to' => ['sometimes', 'numeric'],
+        'booklets_data.'.$this->editedIndex.'.user_id' => ['required'],
     ]; }
 
     public function addValue()
@@ -71,7 +69,7 @@ class Booklet extends Component
         $foundRecord = RptBooklet::findOrFail($id);
 
         if ($validatedData) {
-            $foundRecord->update($validatedData['bookletsData'][$index]);
+            $foundRecord->update($validatedData['booklets_data'][$index]);
         }
         $this->editedIndex = null;
         $this->dispatchBrowserEvent('swalUpdate');
@@ -80,26 +78,26 @@ class Booklet extends Component
     public function saveNew()
     {
         $validatedData = $this->validate([
-            'addNewData.form' => ['required'],
-            'addNewData.begin_qty' => ['required','numeric'],
-            'addNewData.begin_serial_fr' => ['required','numeric'],
-            'addNewData.begin_serial_to' => ['required','numeric'],
-            'addNewData.issued_qty' => ['sometimes', 'numeric'],
-            'addNewData.issued_serial_fr' => ['sometimes', 'numeric'],
-            'addNewData.issued_serial_to' => ['sometimes', 'numeric'],
-            'addNewData.end_qty' => ['sometimes', 'numeric'],
-            'addNewData.end_serial_fr' => ['sometimes', 'numeric'],
-            'addNewData.end_serial_to' => ['sometimes', 'numeric'],
-            'addNewData.user_id' => ['required'],
+            'new_data.form' => ['required'],
+            'new_data.begin_qty' => ['required','numeric'],
+            'new_data.begin_serial_fr' => ['required','numeric'],
+            'new_data.begin_serial_to' => ['required','numeric'],
+            'new_data.issued_qty' => ['sometimes', 'numeric'],
+            'new_data.issued_serial_fr' => ['sometimes', 'numeric'],
+            'new_data.issued_serial_to' => ['sometimes', 'numeric'],
+            'new_data.end_qty' => ['sometimes', 'numeric'],
+            'new_data.end_serial_fr' => ['sometimes', 'numeric'],
+            'new_data.end_serial_to' => ['sometimes', 'numeric'],
+            'new_data.user_id' => ['required'],
         ]);
-        $validatedData['addNewData']['end_qty'] = empty($validatedData['addNewData']['end_qty'])
-            ? $validatedData['addNewData']['begin_qty'] : $validatedData['addNewData']['end_qty'];
-        $validatedData['addNewData']['end_serial_fr'] = empty($validatedData['addNewData']['end_serial_fr'])
-            ? $validatedData['addNewData']['begin_serial_fr'] : $validatedData['addNewData']['end_serial_fr'];
-        $validatedData['addNewData']['end_serial_to'] = empty($validatedData['addNewData']['end_serial_to'])
-            ? $validatedData['addNewData']['begin_serial_to'] : $validatedData['addNewData']['end_serial_to'];
+        $validatedData['new_data']['end_qty'] = empty($validatedData['new_data']['end_qty'])
+            ? $validatedData['new_data']['begin_qty'] : $validatedData['new_data']['end_qty'];
+        $validatedData['new_data']['end_serial_fr'] = empty($validatedData['new_data']['end_serial_fr'])
+            ? $validatedData['new_data']['begin_serial_fr'] : $validatedData['new_data']['end_serial_fr'];
+        $validatedData['new_data']['end_serial_to'] = empty($validatedData['new_data']['end_serial_to'])
+            ? $validatedData['new_data']['begin_serial_to'] : $validatedData['new_data']['end_serial_to'];
 
-        RptBooklet::create($validatedData['addNewData']);
+        RptBooklet::create($validatedData['new_data']);
 
         $this->showAddValue = false;
 
@@ -110,7 +108,7 @@ class Booklet extends Component
 
     public function mount()
     {
-        $this->bookletsData = RptBooklet::with('users')->get()->toArray();
+        $this->booklets_data = RptBooklet::with('users')->get()->toArray();
     }
 
 }

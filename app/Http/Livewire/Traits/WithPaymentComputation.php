@@ -158,6 +158,7 @@ trait WithPaymentComputation
                 $quarterArray[$counter]['temp_basic_penalty'] = ($quarterArray[$counter]['td_basic'] + $quarterArray[$counter]['pen_basic'])*2;
                 $quarterArray[$counter]['amount_due'] = $quarterArray[$counter]['temp_basic_penalty'];
                 $quarterArray[$counter]['status'] = 2;
+                $quarterArray[$counter]['cbt_year'] = 0;
                 $counter++;
             }
             $payYear++;
@@ -196,6 +197,7 @@ trait WithPaymentComputation
             $quarterArray[$counter]['temp_basic_penalty'] = ($quarterArray[$counter]['td_basic'] + $quarterArray[$counter]['pen_basic'])*2;
             $quarterArray[$counter]['amount_due'] = $quarterArray[$counter]['temp_basic_penalty'];
             $quarterArray[$counter]['status'] = 2;
+            $quarterArray[$counter]['cbt_year'] = 0;
         return $quarterArray;
      }
      ## OLD AV COMPUTATION
@@ -234,6 +236,7 @@ trait WithPaymentComputation
             $quarterArray[$counter]['amount_due'] = $quarterArray[$counter]['temp_basic_penalty'];
             // $quarterArray[$counter]['amount_due'] = $quarterArray[$counter]['td_total'] + $quarterArray[$counter]['pen_total'];
             $quarterArray[$counter]['status'] = 2;
+            $quarterArray[$counter]['cbt_year'] = 0;
             $counter++;
         }
         // dd($quarterArray);
@@ -269,6 +272,7 @@ trait WithPaymentComputation
             $quarterArray[$counter]['temp_basic_penalty'] = ($quarterArray[$counter]['td_basic'] + $quarterArray[$counter]['pen_basic'])*2;
             $quarterArray[$counter]['amount_due'] = $quarterArray[$counter]['temp_basic_penalty'];
             $quarterArray[$counter]['status'] = 2;
+            $quarterArray[$counter]['cbt_year'] = 0;
         return $quarterArray;
      }
 
@@ -307,6 +311,7 @@ trait WithPaymentComputation
             $quarterArray[$counter]['amount_due'] = $quarterArray[$counter]['temp_basic_penalty'];
             // $quarterArray[$counter]['amount_due'] = $quarterArray[$counter]['td_total'] + $quarterArray[$counter]['pen_total'];
             $quarterArray[$counter]['status'] = 2;
+            $quarterArray[$counter]['cbt_year'] = 0;
             $counter++;
         }
         return $quarterArray;

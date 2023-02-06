@@ -74,7 +74,12 @@
                                         class="btn btn-sm btn-primary"><i class="fas fa-check"></i></a>
                                 </td>
                                 <td>
-                                    <input wire:model.defer="addNewData.form" style="width:100%" type="text" class="form-control">
+                                    <select wire:model.defer='addNewData.form' class="form-control" style="width:200px">
+                                        <option value="">Please select</option>
+                                        @foreach (\App\Models\ListForm::get() as $form)
+                                            <option value="{{ $form->name }}">{{ $form->name }}</option>
+                                        @endforeach
+                                    </select>
                                 </td>
                                 <td>
                                     <input wire:model.defer="addNewData.begin_qty" style="width:100%" type="number" class="form-control">
