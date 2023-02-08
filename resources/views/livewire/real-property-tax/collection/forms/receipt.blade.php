@@ -5,26 +5,30 @@
             margin-left: 0in;
             margin-right: 0in;
             margin-bottom: 0in;
-            size: 8.5in 11in;
             background-color: red;
         }
         @media print {
+
             .no-print{
                 display: none;!important
             }
-            .image-print-size{
-                /* width: 11in;!important */
+            .wrapper{
+                right:0px;
+            /* left:0px; */
+                top: 0px;
+                transform: rotate(90deg);
+
             }
         }
 
         .wrapper{
             position: absolute;
-            left: 0px;
-            top: 0px;
+
+            /* bottom: 0px; */
             /* rotate: 90deg; */
             font-family: 'Times New Roman', Times, serif;
             font-size: 12px;
-            size: 11in 8.5in;
+            /* size: 10in 5in; */
 
         }
         .invoice{
@@ -248,6 +252,9 @@
         <div class="row-12 no-print" style="margin-left:500px;width:200px;">
             <input wire:model="is_background" type="checkbox" />
             <span style="margin-left:0px;">(Background Print)</span>
+        </div>
+        <div class="row-12 no-print" style="margin-left:700px;width:200px;">
+            <button onclick="window.print()">Print receipt</button>
         </div>
         <!-- /.row -->
     <!-- ./wrapper -->
