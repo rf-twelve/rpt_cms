@@ -10,6 +10,7 @@ class Receipt extends Component
 {
     public $receipt;
     public $array_gap;
+    public $array_size;
     public $initial_top;
     public $initial_sef;
     public $initial_total;
@@ -22,9 +23,18 @@ class Receipt extends Component
         $this->initial_sef = 0;
         $this->initial_total = 0;
         $this->array_gap = 18;
+        $this->array_size = 960;
         $this->is_background = false;
     }
 
+    public function minusSize()
+    {
+        $this->array_size = $this->array_size - 10;
+    }
+    public function addSize()
+    {
+        $this->array_size = $this->array_size + 10;
+    }
     public function minusGap()
     {
         $this->array_gap--;

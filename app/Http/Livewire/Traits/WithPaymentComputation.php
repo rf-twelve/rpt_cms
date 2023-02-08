@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Traits;
 
 use App\Models\RptAssessedValue;
+use App\Models\RptBracket;
 use App\Models\RptPercentage;
 use Illuminate\Support\Arr;
 
@@ -66,8 +67,17 @@ trait WithPaymentComputation
     private function startCompute($id,$next_payment,$month)
     {
         $avs = $this->getAssessedValuesFromNextPayment($id,$next_payment);
-        $percentages = $this->getPercentageValue($month);
-        $year_old_av = ($percentages->where('desc','oldav')->first())->from;
+        $brackets = RptBracket::query()
+                ->select(
+                    'year_from as from',
+                    'year_to as to',
+                    'year_no',
+                    'label',
+                    $month.' as value',
+                    'av_percent',
+
+                )->get();
+        $year_old_av = ($brackets->where('label','Tax due 2021')->first())->from;
 
         $var_array = [
             'next_pay_year' => $next_payment['pay_year'],
@@ -75,94 +85,62 @@ trait WithPaymentComputation
             'old_av_year' => $year_old_av,
             'new_av_year' => $year_old_av + 1,
             'assessed_values' => $avs,
-            'percentages' => $percentages->where('to','>=',$next_payment['pay_year'])->toArray(),
+            'brackets' => $brackets->where('to','>=',$next_payment['pay_year'])->toArray(),
         ];
-        // dd($this->nextPaymentYear);
-        $unpaid = [];
-
-        ## Catching advance payment
-        if ($var_array['next_pay_year'] > $var_array['new_av_year']) {
+        if ($next_payment['pay_year'] > $brackets->last()->from) {
             $this->dispatchBrowserEvent('swalPaymentIsUpdated');
-        ## Catching new av payment
-        } elseif ($var_array['next_pay_year'] == $var_array['new_av_year']) {
-            return $this->newAvCompute($unpaid, $var_array);
-        ## Catching old av payment
-        } elseif($var_array['next_pay_year'] == $var_array['old_av_year']) {
-            ## Check first if last payment has a quarter between 0.25 and 0.75
-            $oldAv35 = $this->oldAv35($unpaid, $var_array);
-            $oldAv = $this->oldAvCompute($oldAv35, $var_array);
-            $oldAv70 = $this->oldAv70($oldAv, $var_array);
-            $var_array['next_pay_quarter'] = 0.25; //reset pay quarter
-            $result = $this->newAvCompute($oldAv70, $var_array);
-            // dd($result);
-            return $result;
-        ## Catching regular payment(below old av)
-        } elseif($var_array['next_pay_year'] < $var_array['old_av_year'])  {
-            // dd('regular av');
-            $regular = $this->regularCompute($unpaid,$var_array);
-            $var_array['next_pay_quarter'] = 0.25; //reset pay quarter
-            $oldAv35 = $this->oldAv35($regular, $var_array);
-            $oldAv = $this->oldAvCompute($oldAv35, $var_array);
-            $oldAv70 = $this->oldAv70($oldAv, $var_array);
-            $result = $this->newAvCompute($oldAv70, $var_array);
-            // dd($result);
-            return $result;
-        }else{
-            $this->dispatchBrowserEvent('swalPaymentIsUpdated');
+        } else {
+            return $this->regularCompute($var_array);
         }
+
+
     }
 
     ## Regular computation below old av
-    public function regularCompute($unpaid, $var_array)
+    public function regularCompute($var_array)
     {
-        // $last_pay_quarter = $var_array['next_pay_quarter'] - 0.25;
-
-        // $num = ($last_pay_quarter >= 0.25 && $last_pay_quarter <= 0.75) ? ((12*$last_pay_quarter)/3)+1 : 1;
-
-        // $quarterArray = $unpaid ?? [];
-        // $counter = count($quarterArray) ?? 0;
         $last_pay_quarter = $var_array['next_pay_quarter'] - 0.25;
-        $collected_p = collect($var_array['percentages']);
-        $collected_av = collect($var_array['assessed_values']);
+        $brackets_coll = collect($var_array['brackets']);
+        $av_coll = collect($var_array['assessed_values']);
         $payYear = $var_array['next_pay_year'];
-        $counter = 0;
-        $countDiff =  $var_array['old_av_year'] - $var_array['next_pay_year'];
+        $payQuarter = $var_array['next_pay_quarter'];
+        $count = 0;
+        // $countDiff =  $var_array['old_av_year'] - $var_array['next_pay_year'];
 
-        for ($i=0; $i < $countDiff; $i++) {
-            $a_value = $collected_av->where('av_from','<=',$payYear)
-                    ->where('av_to','>=',$payYear)->first();
-            $percentages = $collected_p
-                    ->where('from','<=',$payYear)
-                    ->where('to','>=',$payYear)->first();
-
-            $num = ($last_pay_quarter >= 0.25 && $last_pay_quarter <= 0.75)
-                    ? ((12*$last_pay_quarter)/3)+1 : 1;
-
-            for ($x = $num; $x <= 4; $x++) {
-                $quarterArray[$counter]['count'] = $counter;
-                $quarterArray[$counter]['type'] = 'Q'.$payYear;
-                $quarterArray[$counter]['from'] = $payYear;
-                $quarterArray[$counter]['to'] = $payYear;
-                $quarterArray[$counter]['quarter_value'] = 0.25 * $x;
-                $quarterArray[$counter]['quarter_label'] = 'Quarter '.$x;
-                $quarterArray[$counter]['label'] = $quarterArray[$counter]['from'].' Q'.$x;
-                $quarterArray[$counter]['year_no'] = 'Q'.$x;
-                $quarterArray[$counter]['percentage'] = $percentages['value'];
-                $quarterArray[$counter]['value'] = $a_value['value'];
-                $quarterArray[$counter]['td_basic'] = ($a_value['value'] * 0.25) * 0.01;
-                $quarterArray[$counter]['td_sef'] = $quarterArray[$counter]['td_basic'];
-                $quarterArray[$counter]['td_total'] =$quarterArray[$counter]['td_basic'] * 2;
-                $quarterArray[$counter]['pen_basic'] = $quarterArray[$counter]['td_basic'] * $quarterArray[$counter]['percentage'];
-                $quarterArray[$counter]['pen_sef'] = $quarterArray[$counter]['pen_basic'];
-                $quarterArray[$counter]['pen_total'] =$quarterArray[$counter]['pen_basic'] * 2;
-                $quarterArray[$counter]['temp_basic_penalty'] = ($quarterArray[$counter]['td_basic'] + $quarterArray[$counter]['pen_basic'])*2;
-                $quarterArray[$counter]['amount_due'] = $quarterArray[$counter]['temp_basic_penalty'];
-                $quarterArray[$counter]['status'] = 2;
-                $quarterArray[$counter]['cbt_year'] = 0;
-                $counter++;
+        foreach ($var_array['brackets'] as $key => $bracket) {
+            $check_inc = ($bracket['label'] == '35% of increase'
+                || $bracket['label'] == '70% of increase') ? true : false;
+            $av_found = $av_coll->where('av_from','>=',$bracket['from'])
+                ->where('av_to','<=',$bracket['to'])->first();
+            if ($check_inc == true){
+                $av_new = $av_coll->where('av_from','>=',$bracket['from']+1)
+                ->where('av_to','<=',$bracket['to']+1)->first();
+                $av_value = (($av_new['value'] - $av_found['value'])*0.01)*$bracket['av_percent'];
+            }else{
+                $av_value = $av_found['value'] * 0.01;
             }
-            $payYear++;
-            $last_pay_quarter = 0;
+
+            $quarterArray[$key]['index'] = $key;
+            $quarterArray[$key]['label'] = $bracket['year_no']<=1 ? $bracket['label'] : $bracket['label'].'('.$bracket['year_no'].')';
+            $quarterArray[$key]['from'] = $payYear;
+            $quarterArray[$key]['to'] = $bracket['to'];
+            $quarterArray[$key]['q_from'] = $payQuarter;
+            $quarterArray[$key]['q_to'] = 1;
+            $quarterArray[$key]['year_no'] = $bracket['to'] - $payYear + 1;
+            $quarterArray[$key]['av'] = $av_value;
+            $quarterArray[$key]['tax_due'] = $quarterArray[$key]['av'] *  $quarterArray[$key]['year_no'];
+            $quarterArray[$key]['penalty'] = round(($quarterArray[$key]['tax_due'] * $bracket['value']),2);
+            $quarterArray[$key]['penalty_temp'] = $quarterArray[$key]['penalty'];
+            $quarterArray[$key]['total'] = ($quarterArray[$key]['tax_due'] + $quarterArray[$key]['penalty'] );
+            $quarterArray[$key]['status'] = true;
+            $quarterArray[$key]['cbt'] = false;
+
+            if ($bracket['label'] == '35% of increase' || $bracket['label'] == 'Tax due 2021') {
+                $payYear = $bracket['to'];
+            }else{
+                $payYear = $bracket['to']+1;
+            }
+            $payQuarter = 0.25;
         }
         return $quarterArray;
     }
@@ -170,7 +148,7 @@ trait WithPaymentComputation
     ## OLD AV 35% COMPUTATION
     private function oldAv35($unpaid, $var_array){
         // dd($var_array);
-        $percentages = collect($var_array['percentages'])->where('desc','oldav')->first();
+        $percentages = collect($var_array['percentages'])->where('desc','inc35')->first();
         $col_av = collect($var_array['assessed_values']);
         $new_av = $col_av->where('av_from',$var_array['new_av_year'])
                 ->where('av_to',$var_array['new_av_year'])->first();
@@ -226,7 +204,7 @@ trait WithPaymentComputation
             $quarterArray[$counter]['year_no'] = 'Q'.($x);
             $quarterArray[$counter]['percentage'] = $percentages['value'];
             $quarterArray[$counter]['value'] = $old_av['value'] * 0.25;
-            $quarterArray[$counter]['td_basic'] = $quarterArray[$counter]['value'] * 0.01;
+            $quarterArray[$counter]['td_basic'] = round($quarterArray[$counter]['value'] * 0.01,2);
             $quarterArray[$counter]['td_sef'] = $quarterArray[$counter]['td_basic'];
             $quarterArray[$counter]['td_total'] =$quarterArray[$counter]['td_basic'] + $quarterArray[$counter]['td_sef'];
             $quarterArray[$counter]['pen_basic'] = $quarterArray[$counter]['td_basic'] * $quarterArray[$counter]['percentage'];
@@ -244,7 +222,7 @@ trait WithPaymentComputation
      }
      ## OLD AV 70% COMPUTATION
     private function oldAv70($unpaid, $var_array){
-        $percentages = collect($var_array['percentages'])->where('desc','oldav')->first();
+        $percentages = collect($var_array['percentages'])->where('desc','inc70')->first();
         $col_av = collect($var_array['assessed_values']);
         $new_av = $col_av->where('av_from',$var_array['new_av_year'])
                 ->where('av_to',$var_array['new_av_year'])->first();

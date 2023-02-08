@@ -7,9 +7,14 @@
             </div>
             <div class="card-body">
                 <div class="form-group">
-                    <label for="date_input">Date:</label>
-                    <input wire:model.lazy="get_date" type="date" class="form-control" id="date_input" placeholder="Report date">
-                    @error('get_date')<span class="text-danger">{{ $message }}</span>@enderror
+                    <label for="date_from">From:</label>
+                    <input wire:model.lazy="date_from" type="date" class="form-control" id="date_from" placeholder="Report date">
+                    @error('date_from')<span class="text-danger">{{ $message }}</span>@enderror
+                </div>
+                <div class="form-group">
+                    <label for="date_to">To:</label>
+                    <input wire:model.lazy="date_to" type="date" class="form-control" id="date_to" placeholder="Report date">
+                    @error('date_to')<span class="text-danger">{{ $message }}</span>@enderror
                 </div>
                 {{-- <div class="form-group">
                     <label for="as-of">As of:</label>
@@ -45,7 +50,7 @@
                 Province of QUEZON<br>
                 Municipality of LOPEZ<br>
                 <strong>OFFICE OF THE MUNICIPAL TREASURER</strong><br>
-                As of {{ $as_of }}<br>
+                {{ $date_from }} - {{ $date_to }}<br>
 
             </div>
             <div class="mt-2 text-center">

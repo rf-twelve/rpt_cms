@@ -113,17 +113,23 @@ class Accounts extends Component
                 }
             }
         }
-        if (count($this->compute_type_a) > 0) {
-            ## COMPUTE FOR COMPUTE_TYPE_B
-            $this->compute_type_b = $this->computeGroupByYear($this->compute_type_a);
-            ## COMPUTE FOR COMPUTE_TYPE_C
-            $this->compute_type_c = $this->computeWithOutPenalty($this->compute_type_a);
-            $this->tempTaxDues = $this->compute_type_b;
-            $this->payment_set($this->compute_type_b);
+        // dd($this->compute_type_a);
+        $this->tempTaxDues = $this->compute_type_a;
+        $this->payment_set($this->tempTaxDues);
+        $this->viewTaxDue = 1;
 
-        }else{
-            $this->viewTaxDue = 0;
-        }
+
+        // if (count($this->compute_type_a) > 0) {
+        //     ## COMPUTE FOR COMPUTE_TYPE_B
+        //     $this->compute_type_b = $this->computeGroupByYear($this->compute_type_a);
+        //     ## COMPUTE FOR COMPUTE_TYPE_C
+        //     $this->compute_type_c = $this->computeWithOutPenalty($this->compute_type_a);
+        //     $this->tempTaxDues = $this->compute_type_b;
+        //     $this->payment_set($this->compute_type_b);
+
+        // }else{
+        //     $this->viewTaxDue = 1;
+        // }
     }
 
     ## COMPUTATION BASE ON THE BRACKET
@@ -206,75 +212,48 @@ class Accounts extends Component
     ## SET COMPUTATION TO PAYMENT
     public function payment_set($request)
     {
-        $taxDue = collect($request)->where('status', '!=', 0);
-        $new_bracket = $this->computation_bracket($taxDue);
-        if (is_null($request) && empty($request)) {
-            $this->dispatchBrowserEvent('swalNoPayment');
-        } else {
-        $total_amount_due = 0;
-        $total_tc_basic = 0;
-        $total_tc_sef = 0;
-        $total_tc_penalty = 0;
-        $temp_basic_penalty = 0;
-        // dd($taxDue);
-            foreach ($taxDue as $key => $value) {
-                if ($value['status'] == 2) {
-                    $total_tc_basic = $total_tc_basic + $value['td_basic'];
-                    $total_tc_sef = $total_tc_sef + $value['td_sef'];
-                    if($value['cbt_year'] == true){
-                        $total_tc_penalty = $total_tc_penalty + 0;
-                        $temp_basic_penalty = $temp_basic_penalty + 0;
-                    }else{
-                        $total_tc_penalty = $total_tc_penalty + $value['pen_total'];
-                        $temp_basic_penalty = $temp_basic_penalty + ($value['temp_basic_penalty']*2);
-                    }
-                    $total_amount_due = $total_amount_due + $value['amount_due'];
-                }
-            }
-            // $this->ai_total_amount_due = (round($total_amount_due/2,2)*2);
-            $this->ai_total_amount_due = round($total_amount_due,2);
-            if (count($taxDue) > 0) {
-                $payment_first_label = '';
-                $payment_last_label = '';
-                if ($taxDue->first()['quarter_value'] == 0.35) {
-                    $payment_quarter_first = 1.0;
-                    $payment_first_label = $taxDue->first()['from'].' Q1';
-                } else {
-                    $payment_quarter_first = $taxDue->first()['quarter_value'];
-                    $payment_first_label = $taxDue->first()['label'];
-                }
 
-                if ($taxDue->last()['quarter_value'] == 0.7) {
-                    $payment_quarter_last = 1.0;
-                    $payment_last_label = $taxDue->last()['to'].' Q4';
-                } else {
-                    $payment_quarter_last = $taxDue->last()['quarter_value'];
-                    $payment_last_label = $taxDue->last()['label'];
-                }
-                $this->all_data = [
-                    'bracket_computation' => $new_bracket,
-                    'prev_trn' => $this->account_data->rtdp_or_no,
-                    'prev_date' => $this->account_data->rtdp_payment_date,
-                    'prev_for' => $this->getPrevPaymentRecord($this->account_data),
-                    'province' => 'QUEZON',
-                    'city' => 'LOPEZ',
-                    'amount' => $this->ai_total_amount_due,
-                    'for' => $payment_first_label.'-'.$payment_last_label,
-                    'owner_name' => $this->account_data->ro_name,
-                    'location' => (ListBarangay::where('index',$this->account_data->lp_brgy)->first())->name ?? 'Unknown',
-                    'tdn' => $this->account_data->rpt_pin,
-                    'rpt_account_id' => $this->account_data->id,
-                    'pr_year_first' => $taxDue->first()['from'],
-                    'pr_quarter_first' => $payment_quarter_first,
-                    'pr_year_last' => $taxDue->last()['to'],
-                    'pr_quarter_last' => $payment_quarter_last,
-                    'pr_year_no' => $taxDue->last()['to'] - $taxDue->first()['from'] + 1,
-                    'pr_tc_basic' => $total_tc_basic,
-                    'pr_tc_sef' => $total_tc_sef,
-                    'pr_tc_penalty' => $total_tc_penalty,
-                    'pr_amount_due' => $this->ai_total_amount_due,
-                ];
-            }
+        $taxDue = collect($request)->where('status', true);
+        // dd($taxDue);
+        // $new_bracket = $this->computation_bracket($taxDue);
+        // dd($taxDue);
+        if(count($taxDue) > 0) {
+        ## GETTING FINAL RESULT
+        $total_basic = 0;
+        $total_penalty = 0;
+        $total_amount_due = 0;
+        foreach ($taxDue as $key => $value) {
+            $total_basic = $total_basic + $value['tax_due'];
+            $total_penalty = $total_penalty + ($value['cbt'] ? 0 : $value['penalty']);
+            $total_amount_due = $total_amount_due + $value['tax_due']
+                    + ($value['cbt'] ? 0 : $value['penalty']);
+        }
+
+        $for_from = $taxDue->first()['from'].($taxDue->first()['q_from']);
+        $for_to = $taxDue->first()['to'];
+        $this->all_data = [
+            'bracket_computation' => $taxDue,
+            'prev_trn' => $this->account_data->rtdp_or_no,
+            'prev_date' => $this->account_data->rtdp_payment_date,
+            'prev_for' => $this->getPrevPaymentRecord($this->account_data),
+            'province' => 'QUEZON',
+            'city' => 'LOPEZ',
+            'amount' => $total_amount_due * 2,
+            'for' => $taxDue->first()['from'].'-'.$taxDue->last()['to'],
+            'owner_name' => $this->account_data->ro_name,
+            'location' => (ListBarangay::where('index',$this->account_data->lp_brgy)->first())->name ?? 'Unknown',
+            'tdn' => $this->account_data->rpt_pin,
+            'rpt_account_id' => $this->account_data->id,
+            'pr_year_first' => $taxDue->first()['from'],
+            'pr_quarter_first' => $taxDue->first()['q_from'],
+            'pr_year_last' => $taxDue->last()['to'],
+            'pr_quarter_last' => $taxDue->first()['q_to'],
+            'pr_year_no' => $taxDue->last()['to'] - $taxDue->first()['from'] + 1,
+            'pr_tc_basic' => $total_basic,
+            'pr_tc_sef' => $total_basic,
+            'pr_tc_penalty' => $total_penalty,
+            'pr_amount_due' => $total_amount_due * 2,
+        ];
         }
     }
 
@@ -285,103 +264,71 @@ class Accounts extends Component
         $taxDue = $this->tempTaxDues;
         $newTaxDue = [];
             foreach ($taxDue as $key => $value) {
-                if ($value['status'] == 2) {
-                    if ($this->cbt == true) {
-                        $value['amount_due'] = ($value['td_total']);
-                        $value['temp_basic_penalty'] = ($value['td_total']);
-                    } else {
-                        $value['amount_due'] = $value['td_total']+$value['pen_total'];
-                        $value['temp_basic_penalty'] = $value['td_total']+$value['pen_total'];
-                    }
+                if ($value['status']) {
+                    $value['cbt'] = $this->cbt;
+                    if ($value['cbt']) {
+                        $value['penalty_temp'] = 0;
+                        $value['total'] = $value['tax_due'];
+                      } else {
+                        $value['penalty_temp'] = $value['penalty'];
+                        $value['total'] = $value['tax_due'] + $value['penalty'];
+                      }
                 }
                 $newTaxDue[$key] = $value;
             }
-        // dd($newTaxDue);
-        $this->payment_set($newTaxDue);
-    }
-
-    ## MARKED CHECK THE SELECTED LIST
-    public function checkList($id)
-    {
-        $taxDue = $this->tempTaxDues;
-        $newTaxDue = [];
-        foreach ($taxDue as $key => $value) {
-            if ($value['count'] <= $id) {
-                $value['status'] = 2;
-            }
-            $newTaxDue[$key] = $value;
-        }
-        $this->payment_due_temp = $newTaxDue;
-        $this->tempTaxDues = $this->payment_due_temp;
         $this->emitSelf('refreshComponent');
+        $this->tempTaxDues = $newTaxDue;
         $this->payment_set($this->tempTaxDues);
     }
 
     ## UNMARKED CHECK THE SELECTED LIST
-    public function uncheckList($id)
+    public function toggleList($id)
     {
         $taxDue = $this->tempTaxDues;
         $collect = collect($taxDue);
-        $is35 = ($collect->where('count',$id)->first())['quarter_value'];
+        $get_label = ($collect->where('index',$id)->first())['label'];
         $newTaxDue = [];
-        if ($is35 == 0.35) {
-            foreach ($taxDue as $key => $value) {
-                if($value['count'] == $id){
-                    $value['status'] = 0;
-                }
-                $newTaxDue[$key] = $value;
+
+        foreach ($taxDue as $key => $value) {
+            if($value['index'] == $id){
+                $value['status'] = !$value['status'];
             }
-        } elseif($is35 == 0.70) {
-            foreach ($taxDue as $key => $value) {
-                if($value['count'] == $id){
-                    $value['status'] = 0;
-                }
-                $newTaxDue[$key] = $value;
-            }
-        } else {
-            foreach ($taxDue as $key => $value) {
-                if($value['count'] >= $id){
-                    $value['status'] = 0;
-                }
-                $newTaxDue[$key] = $value;
-            }
+            $newTaxDue[$key] = $value;
         }
-        // dd($newTaxDue);
-        $this->payment_due_temp = $newTaxDue;
         $this->emitSelf('refreshComponent');
-        $this->tempTaxDues = $this->payment_due_temp;
+        $this->tempTaxDues = $newTaxDue;
         $this->payment_set($this->tempTaxDues);
     }
 
       ## TOGGLE CBR PER YEAR
-      public function checkCBT($id)
+      public function toggleCbt($id)
       {
           $taxDue = $this->tempTaxDues;
           $newTaxDue = [];
           foreach ($taxDue as $key => $value) {
-              if ($value['count'] == $id) {
-                  $value['cbt_year'] = !$value['cbt_year'];
-                  if ($value['cbt_year']) {
-                    $value['amount_due'] = ($value['td_total']);
-                    $value['temp_basic_penalty'] = ($value['td_total']);
-                  } else {
-                    $value['amount_due'] = ($value['td_total'] + $value['pen_total']);
-                    $value['temp_basic_penalty'] = ($value['td_total'] + $value['pen_total']);
-                  }
+              if ($value['index'] == $id) {
+                  $value['cbt'] = !$value['cbt'];
               }
+              if ($value['cbt']) {
+                $value['penalty_temp'] = 0;
+                $value['total'] = $value['tax_due'];
+              } else {
+                $value['penalty_temp'] = $value['penalty'];
+                $value['total'] = $value['tax_due'] + $value['penalty'];
+              }
+
               $newTaxDue[$key] = $value;
           }
         //   dd($newTaxDue);
           $this->payment_due_temp = $newTaxDue;
-          $this->tempTaxDues = $this->payment_due_temp;
           $this->emitSelf('refreshComponent');
+          $this->tempTaxDues = $this->payment_due_temp;
           $this->payment_set($this->tempTaxDues);
       }
 
     public function open_payment()
     {
         // dd($this->all_data);
-        // dd($this->bracket_form_computation);
         $this->emit('openPayment', $this->all_data);
     }
 

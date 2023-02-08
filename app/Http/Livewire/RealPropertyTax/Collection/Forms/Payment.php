@@ -135,12 +135,13 @@ class Payment extends Component
         foreach($this->get_data['bracket_computation'] as $index => $comp){
             $issued_receipt->receipt_datas()->create([
                 'av' => $comp['av'],
-                'td' => $comp['td'],
+                'td' => $comp['tax_due'],
                 'year_no' => $comp['year_no'],
-                'label' => $comp['label'],
-                'total_td' => $comp['total_td'],
+                'label' => ($comp['from'] == $comp['to']
+                    ? $comp['label'] : $comp['from'].'-'.$comp['to'] ),
+                'total_td' => $comp['tax_due'],
                 'penalty' => $comp['penalty'],
-                'subtotal' => $comp['subtotal'],
+                'subtotal' => $comp['total'],
             ]);
         }
         ## Update for RPT Account

@@ -21,7 +21,7 @@ trait WithAssessedValue
     public function assessedValueWithBarangay(){
         return RptAssessedValue::query()
         ->with(['rptAccount' => function ($query) {
-            $query->select('id', 'lp_brgy');
+            $query->select('id','lp_brgy','rtdp_status');
         }])
         ->select('av_year_from','av_year_to','av_value','rpt_account_id')
         ->get();
@@ -95,10 +95,11 @@ trait WithAssessedValue
     }
 
     // GENERATE COLLECTIBLES REPORT
-    public function generateCollectibles($getdate){
-        $newAvYear = date('Y',strtotime($getdate));
+    public function generateCollectibles($from, $to){
+        $newAvYear = $to;
         $oldAvYear = $newAvYear - 1;
         $getData = $this->assessedValueWithBarangay();
+        dd($getData->toArray());
 
         $newAV = $getData->where('av_year_from','<=',$newAvYear)
                 ->where('av_year_to','>=',$newAvYear);
@@ -134,6 +135,46 @@ trait WithAssessedValue
             'assessment_roll_total' => $this->total,
         ];
     }
+    // // GENERATE COLLECTIBLES REPORT
+    // public function generateCollectibles($getdate){
+    //     $newAvYear = date('Y',strtotime($getdate));
+    //     $oldAvYear = $newAvYear - 1;
+    //     $getData = $this->assessedValueWithBarangay();
+
+    //     $newAV = $getData->where('av_year_from','<=',$newAvYear)
+    //             ->where('av_year_to','>=',$newAvYear);
+    //     $oldAV = $getData->where('av_year_from','<=',$oldAvYear)
+    //             ->where('av_year_to','>=',$oldAvYear);
+    //     $newData = [];
+    //     foreach($newAV as $key => $value){
+    //         $newData[$key] = collect($value)
+    //             ->merge(['old_av' => ($oldAV->where('rpt_account_id',$value->rpt_account_id)
+    //             ->first())->av_value])
+    //             ->toArray();
+    //     }
+    //     $groupByBrgy = collect($newData)->sortBy('rpt_account.lp_brgy')->groupBy('rpt_account.lp_brgy');
+    //     $count = 1;
+    //     foreach($groupByBrgy as $key => $value){
+    //         // dd($value);
+    //         $this->data[$count]['count'] = $count;
+    //         $this->data[$count]['barangay'] = (ListBarangay::where('index',$value->first()['rpt_account']['lp_brgy'])->first())->name;
+    //         $this->data[$count]['new_av'] = $value->sum('av_value');
+    //         $this->data[$count]['old_av'] = $value->sum('old_av');
+    //         $this->data[$count]['old_av_1'] = $value->sum('old_av') * 0.01;
+    //         $this->data[$count]['new_av_70'] = ($this->data[$count]['new_av'] - $value->sum('old_av')) * (0.7 * 0.01);
+    //         $this->data[$count]['total'] = $this->data[$count]['old_av_1'] + $this->data[$count]['new_av_70'];
+    //         $count++;
+    //     }
+    //     $this->total['new_av'] = collect($this->data)->sum('new_av');
+    //     $this->total['old_av'] = collect($this->data)->sum('old_av');
+    //     $this->total['old_av_1'] = collect($this->data)->sum('old_av_1');
+    //     $this->total['new_av_70'] = collect($this->data)->sum('new_av_70');
+    //     $this->total['total'] = collect($this->data)->sum('total');
+    //     return [
+    //         'assessment_roll_data' => $this->data,
+    //         'assessment_roll_total' => $this->total,
+    //     ];
+    // }
 
     // GENERATE DELINQUENCY REPORT
     public function generateDelinquencies($start_year, $end_year){

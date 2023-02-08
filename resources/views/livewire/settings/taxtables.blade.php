@@ -57,6 +57,9 @@
                         <input wire:model.defer="newValues.count" placeholder="Total Year" style="width:100px" type="text" class="form-control">
                     </td>
                     <td>
+                        <input wire:model.defer="newValues.desc" placeholder="Total Year" style="width:100px" type="text" class="form-control">
+                    </td>
+                    <td>
                         <input wire:model.defer="newValues.january" placeholder="Enter Value" style="width:100px" type="text" class="form-control">
                     </td>
                     <td>

@@ -5,7 +5,8 @@
             margin-left: 0in;
             margin-right: 0in;
             margin-bottom: 0in;
-            size: 11in 8.5in;
+            size: 8.5in 11in;
+            background-color: red;
         }
         @media print {
             .no-print{
@@ -94,6 +95,10 @@
             position: absolute;
             top:429px;
         }
+        .row-12{
+            position: absolute;
+            top:600px;
+        }
         .adjust-button{
             border: 1px;
             border-radius:20%;
@@ -104,17 +109,16 @@
             /* padding: 1px; */
         }
         .img-size{
-            size: 5in 5in;
+            /* size: 10in 10in; */
             margin: 0;
         }
         img {
             position: fixed;
-            width: 10in;
             z-index:-1;
         }
     </style>
     <div class="wrapper">
-        <img class="img-size {{ $is_background ? '' : 'no-print' }}" src="http://localhost/RPT_CMS/public/img/system/AF56.jpg">
+        <img width="{{ $array_size }}px" class="img-size {{ $is_background ? '' : 'no-print' }}" src="http://localhost/RPT_CMS/public/img/system/AF56.jpg">
     {{-- <div style="background-image: {{ url('img\system\AF56.jpg') }}" class="wrapper"> --}}
     <!-- Main content -->
     {{-- <section class="invoice"> --}}
@@ -175,15 +179,6 @@
                 {{ $receipt->tdn }}
             </span>
         </div>
-        <div class="row-5 no-print" style="margin-left:950px;width:200px;">
-            <input wire:model="is_background" type="checkbox" />
-            <span style="margin-left:24px;">(Background Print)</span>
-        </div>
-        <div class="row-6 no-print" style="margin-left:950px;width:200px;">
-            <button wire:click="minusGap" type="button" class="adjust-button">-</button>
-            <button wire:click="addGap" type="button" class="adjust-button">+</button>
-            <span>(Gap Adjust)</span>
-        </div>
 
         @if (count($receipt->receipt_datas) > 0)
         @foreach ($receipt->receipt_datas as $computation)
@@ -238,6 +233,21 @@
         {{-- Tenth Row --}}
         <div class="row-11" style="margin-left:692px;width: 200px;text-align:center;">
             <span style="font-size:10px">{{ $receipt->user_deputy }}</span>
+        </div>
+        {{-- BUTTONS --}}
+        <div class="row-12 no-print" style="margin-left:100px;width:200px;">
+            <button wire:click="minusGap" type="button" class="adjust-button">-</button>
+            <button wire:click="addGap" type="button" class="adjust-button">+</button>
+            <span>(Gap Adjust : {{ $array_gap }})</span>
+        </div>
+        <div class="row-12 no-print" style="margin-left:300px;width:200px;">
+            <button wire:click="minusSize" type="button" class="adjust-button">-</button>
+            <button wire:click="addSize" type="button" class="adjust-button">+</button>
+            <span>(Size Adjust : {{ $array_size }})</span>
+        </div>
+        <div class="row-12 no-print" style="margin-left:500px;width:200px;">
+            <input wire:model="is_background" type="checkbox" />
+            <span style="margin-left:0px;">(Background Print)</span>
         </div>
         <!-- /.row -->
     <!-- ./wrapper -->

@@ -12,36 +12,37 @@ use App\Models\RptAccount;
 class Collectible extends Component
 {
     use WithAssessedValue, WithBarangay;
-    public $as_of;
-    public $get_date;
+    public $date_from;
+    public $date_to;
     public $signatory1;
     public $designation1;
     public $data = [];
     public $total = [];
 
     protected $rules = [
-        'get_date' => 'required',
         'signatory1' => 'required',
         'designation1' => 'required',
     ];
 
     public function mount(){
-        $this->get_date = date('Y-m-d',strtotime(Carbon::now()));
-        $this->as_of = date('m/d/Y',strtotime($this->get_date));
+        $this->date_from = date('Y-m-d');
+        $this->date_to = date('Y-m-d');
         $this->signatory1 = 'LUCILA N. VILLASEÑOR';
         $this->designation1 = 'Administrative Aide II';
-        $this->data = $this->generateCollectibles($this->get_date);
+        $this->data = $this->generateCollectibles(date('Y',strtotime($this->date_from)),date('Y',strtotime($this->date_to)));
     }
 
-    public function updated($propertyName)
+    public function updatedDateFrom()
     {
-        $this->validateOnly($propertyName);
-        if($propertyName == 'get_date'){
-            $this->as_of = date('m/d/Y',strtotime($this->get_date));
-            $this->data = [];
-            $this->data = $this->generateCollectibles($this->get_date);
-            // dd($this->data);
-        }
+        $this->data = [];
+        $this->data = $this->generateCollectibles(date('Y',strtotime($this->date_from)),date('Y',strtotime($this->date_to)));
+    }
+
+    public function updatedDateTo()
+    {
+        $this->data = [];
+        $this->data = $this->generateCollectibles(date('Y',strtotime($this->date_from)),date('Y',strtotime($this->date_to)));
+
     }
 
     public function print()

@@ -3,16 +3,33 @@
 namespace App\Http\Livewire\Settings;
 
 use App\Models\RptPercentage;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
 
 class Taxtables extends Component
 {
     public $editedFormulaIndex = null;
     public $formula_values = [];
-    public $newValues = [];
-    public $newAvYear;
-    public $oldAvYear;
+    public $newValues = [
+        'from' => '',
+        'to' => '',
+        'count' => '',
+        'desc' => '',
+        'january' => '',
+        'february' => '',
+        'march' => '',
+        'april' => '',
+        'may' => '',
+        'june' => '',
+        'july' => '',
+        'august' => '',
+        'september' => '',
+        'october' => '',
+        'november' => '',
+        'december' => '',
+    ];
+    // public $newAvYear;
+    // public $oldAvYear;
 
     public function render()
     {
@@ -32,8 +49,8 @@ class Taxtables extends Component
 
     public function mount()
     {
-        $this->newAvYear = date("Y", strtotime(Carbon::now()));
-        $this->oldAvYear = $this->newAvYear - 1;
+        // $this->newAvYear = date("Y", strtotime(Carbon::now()));
+        // $this->oldAvYear = $this->newAvYear - 1;
         $this->formula_values = RptPercentage::get()->toArray();
     }
 
@@ -44,10 +61,11 @@ class Taxtables extends Component
 
     public function saveNew()
     {
-        $validated = $this->validate([
+        $valid = $this->validate([
             'newValues.from' => ['required'],
             'newValues.to' => ['required'],
             'newValues.count' => ['required'],
+            'newValues.desc' => ['required'],
             'newValues.january' => ['required'],
             'newValues.february' => ['required'],
             'newValues.march' => ['required'],
@@ -61,16 +79,16 @@ class Taxtables extends Component
             'newValues.november' => ['required'],
             'newValues.december' => ['required'],
         ]);
-        $validated['newValues']['label'] = $validated['newValues']['from'];
-        $validated['newValues']['year'] = $validated['newValues']['from'];
-        RptPercentage::create($validated['newValues']);
+        RptPercentage::create($valid['newValues']);
         $this->dispatchBrowserEvent('swalSuccess');
         $this->redirectRoute('settings_taxtables');
     }
 
     public function saveFormulaValue($id, $index)
     {
+
         $validated = $this->validate();
+        // dd($validated);
         RptPercentage::find($id)
             ->update($validated['formula_values'][$index]);
         $this->formula_values = RptPercentage::get()->toArray();
@@ -82,6 +100,7 @@ class Taxtables extends Component
         'formula_values.*.from' => ['required'],
         'formula_values.*.to' => ['required'],
         'formula_values.*.count' => ['required'],
+        'formula_values.*.desc' => ['required'],
         'formula_values.*.january' => ['required'],
         'formula_values.*.february' => ['required'],
         'formula_values.*.march' => ['required'],
