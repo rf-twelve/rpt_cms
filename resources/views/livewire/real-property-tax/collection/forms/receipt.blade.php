@@ -38,7 +38,7 @@
         .row-1{
             position: absolute;
             width: 15in;
-            top:31px;
+            top:28px;
         }
         .image-size{
             /* width: 5.5in; */
@@ -47,7 +47,7 @@
         .row-2{
             position: absolute;
             width: 15in;
-            top:55px;
+            top:50px;
         }
         .row-3{
             font-size: 22px;
