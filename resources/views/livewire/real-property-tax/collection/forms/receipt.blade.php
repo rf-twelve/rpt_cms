@@ -137,7 +137,7 @@
             <span style="">{{ $receipt->prev_for }}</span>
         </div>
         {{-- Second Row --}}
-        <div class="row-2" style="margin-left: 1050px;font-size: 16px;">
+        <div class="row-2" style="margin-left: 1130px;font-size: 18px;">
             <span style="">TRN: {{ $receipt->trn }}</span>
         </div>
         {{-- Third Row --}}
