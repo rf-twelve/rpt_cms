@@ -122,11 +122,12 @@
                                     @if ($item['av_value'] == 0)
                                     &nbsp-
                                     @else
-                                        @if (strpos($item['av_value'], ',') !== false)
+                                    {{ $item['av_value'] }}
+                                        {{-- @if (strpos($item['av_value'], ',') !== false)
                                         {{'P '.$item['av_value']}}
                                         @else
                                         {{'P '.number_format($item['av_value'], 2, '.', ',')}}
-                                        @endif
+                                        @endif --}}
                                     @endif
                                 </td>
                             </tr>
