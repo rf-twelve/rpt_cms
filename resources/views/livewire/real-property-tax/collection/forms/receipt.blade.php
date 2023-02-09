@@ -38,7 +38,7 @@
         .row-1{
             position: absolute;
             width: 15in;
-            top:35px;
+            top:31px;
         }
         .image-size{
             /* width: 5.5in; */
@@ -47,13 +47,13 @@
         .row-2{
             position: absolute;
             width: 15in;
-            top:60px;
+            top:55px;
         }
         .row-3{
             font-size: 22px;
             position: absolute;
             width: 15in;
-            top:152px;
+            top:148px;
         }
         .row-4{
             font-size: 20px;
@@ -71,7 +71,7 @@
             font-size: 20px;
             position: absolute;
             width: 15in;
-            top:320px;
+            top:330px;
         }
         .row-7{
             font-size: 20px;
@@ -162,10 +162,10 @@
             <span style="margin-left: 440px">{{ $receipt->for }}</span>
         </div>
         <div class="row-5">
-            <span style="margin-left: 700px">{{ $receipt->is_basic ? '✔' : '' }}</span>
+            <span style="margin-left: 695px">{{ $receipt->is_basic ? '✔' : '' }}</span>
         </div>
         <div class="row-5">
-            <span style="margin-left: 910px">{{ $receipt->is_sef ? '✔' : '' }}</span>
+            <span style="margin-left: 905px">{{ $receipt->is_sef ? '✔' : '' }}</span>
         </div>
         {{-- Six Row --}}
         <div class="row-6" style="margin-left:48px;width: 90px;">
