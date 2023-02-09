@@ -56,7 +56,6 @@
             top:148px;
         }
         .row-4{
-            font-size: 20px;
             position: absolute;
             width: 15in;
             top:180px;
@@ -151,11 +150,11 @@
         <div class="row-4" style="margin-top:1px;">
             <span style="margin-left: 350px">{{ $receipt->payee }}</span>
         </div>
-        <div class="row-4" style="margin-left: 830px;width:190px;line-height:.5;">
-            <span style="font-family:Tahoma-narrow;font-size:9px;">{{ $receipt->amount_words }}</span>
+        <div class="row-4" style="margin-left: 830px;width:190px;">
+            <span style="font-size:9px;font-weight: 900;">{{ $receipt->amount_words }}</span>
         </div>
         <div class="row-4" style="margin-left:1180px;width:85px;margin-top:1px;text-align:center">
-            <span style="font-family:Tahoma-narrow;font-size:12px;">{{ number_format($receipt->amount,2,'.',',') }}</span>
+            <span style="font-family:Tahoma-narrow;font-size:18px;">{{ number_format($receipt->amount,2,'.',',') }}</span>
         </div>
         {{-- Fifth Row --}}
         <div class="row-5">
@@ -186,12 +185,12 @@
 
         @if (count($receipt->receipt_datas) > 0)
         @foreach ($receipt->receipt_datas as $computation)
-            <div style="top:{{ $initial_top }}px;position:absolute;margin-left:840px; width: 60px;text-align:right;">
+            {{-- <div style="top:{{ $initial_top }}px;position:absolute;margin-left:840px; width: 60px;text-align:right;">
                 <span style="font-size:16px;">{{ number_format($computation['av'],2, '.', ',') }}</span>
             </div>
             <div style="top:{{ $initial_top }}px;position:absolute;margin-left:900px; width: 60px;text-align:right;">
                 <span style="font-size:16px;">{{ number_format($computation['td'],2, '.', ',') }}</span>
-            </div>
+            </div> --}}
             <div style="top:{{ $initial_top }}px;position:absolute;margin-left: 960px; width: 98px;text-align:right;">
                 <span style="font-size:14px;">{{ $computation['label'] }}</span>
             </div>
