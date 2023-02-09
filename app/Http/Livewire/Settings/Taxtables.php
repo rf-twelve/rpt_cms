@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Settings;
 
+use App\Models\RptBracket;
 use App\Models\RptPercentage;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Component;
@@ -11,10 +12,11 @@ class Taxtables extends Component
     public $editedFormulaIndex = null;
     public $formula_values = [];
     public $newValues = [
-        'from' => '',
-        'to' => '',
-        'count' => '',
-        'desc' => '',
+        'year_from' => '',
+        'year_to' => '',
+        'label' => '',
+        'year_no' => '',
+        'av_percent' => '',
         'january' => '',
         'february' => '',
         'march' => '',
@@ -51,7 +53,7 @@ class Taxtables extends Component
     {
         // $this->newAvYear = date("Y", strtotime(Carbon::now()));
         // $this->oldAvYear = $this->newAvYear - 1;
-        $this->formula_values = RptPercentage::get()->toArray();
+        $this->formula_values = RptBracket::get()->toArray();
     }
 
     public function editFormula($formula_index)
@@ -62,10 +64,11 @@ class Taxtables extends Component
     public function saveNew()
     {
         $valid = $this->validate([
-            'newValues.from' => ['required'],
-            'newValues.to' => ['required'],
-            'newValues.count' => ['required'],
-            'newValues.desc' => ['required'],
+            'newValues.year_from' => ['required'],
+            'newValues.year_to' => ['required'],
+            'newValues.label' => ['required'],
+            'newValues.year_no' => ['required'],
+            'newValues.av_percent' => ['required'],
             'newValues.january' => ['required'],
             'newValues.february' => ['required'],
             'newValues.march' => ['required'],
@@ -79,7 +82,7 @@ class Taxtables extends Component
             'newValues.november' => ['required'],
             'newValues.december' => ['required'],
         ]);
-        RptPercentage::create($valid['newValues']);
+        RptBracket::create($valid['newValues']);
         $this->dispatchBrowserEvent('swalSuccess');
         $this->redirectRoute('settings_taxtables');
     }
@@ -89,18 +92,19 @@ class Taxtables extends Component
 
         $validated = $this->validate();
         // dd($validated);
-        RptPercentage::find($id)
+        RptBracket::find($id)
             ->update($validated['formula_values'][$index]);
-        $this->formula_values = RptPercentage::get()->toArray();
+        $this->formula_values = RptBracket::get()->toArray();
         $this->editedFormulaIndex = null;
         $this->dispatchBrowserEvent('swalUpdate');
     }
 
     protected $rules = [
-        'formula_values.*.from' => ['required'],
-        'formula_values.*.to' => ['required'],
-        'formula_values.*.count' => ['required'],
-        'formula_values.*.desc' => ['required'],
+        'formula_values.*.year_from' => ['required'],
+        'formula_values.*.year_to' => ['required'],
+        'formula_values.*.label' => ['required'],
+        'formula_values.*.year_no' => ['required'],
+        'formula_values.*.av_percent' => ['required'],
         'formula_values.*.january' => ['required'],
         'formula_values.*.february' => ['required'],
         'formula_values.*.march' => ['required'],
@@ -115,9 +119,8 @@ class Taxtables extends Component
         'formula_values.*.december' => ['required'],
     ];
     protected $validationAttributes = [
-        'formula_values.*.from' => 'From(year)',
-        'formula_values.*.to' => 'To(year)',
-        'formula_values.*.count' => 'Number of year',
+        'formula_values.*.year_from' => 'From(year)',
+        'formula_values.*.year_to' => 'To(year)',
     ];
 }
 

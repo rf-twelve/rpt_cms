@@ -101,7 +101,7 @@
         }
         .row-12{
             position: absolute;
-            top:600px;
+            top:680px;
         }
         .adjust-button{
             border: 1px;

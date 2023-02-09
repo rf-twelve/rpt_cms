@@ -22,8 +22,9 @@
                     </th>
                     <th rowspan="2">FROM(Year)</th>
                     <th rowspan="2">TO(Year)</th>
-                    <th rowspan="2">YEAR TOTAL</th>
-                    <th rowspan="2">DESC</th>
+                    <th rowspan="2">LABEL</th>
+                    <th rowspan="2">YEAR NO</th>
+                    <th rowspan="2">AV PERCENTAGE</th>
                     <th colspan="12" class="text-center">MONTH</th>
                 </tr>
                 <tr class="bg-warning">
@@ -48,16 +49,19 @@
                         <a wire:click.prevent="saveNew()" href="#" class="btn btn-primary"><i class="fas fa-check"></i></a>
                     </td>
                     <td>
-                        <input wire:model.defer="newValues.from" placeholder="Year From" style="width:100px" type="text" class="form-control">
+                        <input wire:model.defer="newValues.year_from" placeholder="Year From" style="width:100px" type="text" class="form-control">
                     </td>
                     <td>
-                        <input wire:model.defer="newValues.to" placeholder="Year To" style="width:100px" type="text" class="form-control">
+                        <input wire:model.defer="newValues.year_to" placeholder="Year To" style="width:100px" type="text" class="form-control">
                     </td>
                     <td>
-                        <input wire:model.defer="newValues.count" placeholder="Total Year" style="width:100px" type="text" class="form-control">
+                        <input wire:model.defer="newValues.label" placeholder="Total Year" style="width:100px" type="text" class="form-control">
                     </td>
                     <td>
-                        <input wire:model.defer="newValues.desc" placeholder="Total Year" style="width:100px" type="text" class="form-control">
+                        <input wire:model.defer="newValues.year_no" placeholder="Total Year" style="width:100px" type="text" class="form-control">
+                    </td>
+                    <td>
+                        <input wire:model.defer="newValues.av_percent" placeholder="Total Year" style="width:100px" type="text" class="form-control">
                     </td>
                     <td>
                         <input wire:model.defer="newValues.january" placeholder="Enter Value" style="width:100px" type="text" class="form-control">
@@ -110,33 +114,41 @@
                     </td>
                     <td>
                         @if ($editedFormulaIndex !== $index)
-                        {{$item['from']}}
+                        {{$item['year_from']}}
                         @else
-                        <input wire:model.defer="formula_values.{{$index}}.from" style="width:100px" type="text"
+                        <input wire:model.defer="formula_values.{{$index}}.year_from" style="width:100px" type="text"
                             class="form-control">
                         @endif
                     </td>
                     <td>
                         @if ($editedFormulaIndex !== $index)
-                        {{$item['to']}}
+                        {{$item['year_to']}}
                         @else
-                        <input wire:model.defer="formula_values.{{$index}}.to" style="width:100px" type="text"
+                        <input wire:model.defer="formula_values.{{$index}}.year_to" style="width:100px" type="text"
                             class="form-control">
                         @endif
                     </td>
                     <td>
                         @if ($editedFormulaIndex !== $index)
-                        {{$item['count']}}
+                        {{$item['label']}}
                         @else
-                        <input wire:model.defer="formula_values.{{$index}}.count" style="width:100px" type="text"
+                        <input wire:model.defer="formula_values.{{$index}}.label" style="width:100px" type="text"
                             class="form-control">
                         @endif
                     </td>
                     <td>
                         @if ($editedFormulaIndex !== $index)
-                        {{$item['desc']}}
+                        {{$item['year_no']}}
                         @else
-                        <input wire:model.defer="formula_values.{{$index}}.desc" style="width:100px" type="text"
+                        <input wire:model.defer="formula_values.{{$index}}.year_no" style="width:100px" type="text"
+                            class="form-control">
+                        @endif
+                    </td>
+                    <td>
+                        @if ($editedFormulaIndex !== $index)
+                        {{$item['av_percent']}}
+                        @else
+                        <input wire:model.defer="formula_values.{{$index}}.av_percent" style="width:100px" type="text"
                             class="form-control">
                         @endif
                     </td>

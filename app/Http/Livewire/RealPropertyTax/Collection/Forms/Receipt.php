@@ -23,7 +23,7 @@ class Receipt extends Component
         $this->initial_sef = 0;
         $this->initial_total = 0;
         $this->array_gap = 18;
-        $this->array_size = 960;
+        $this->array_size = 1370;
         $this->is_background = false;
     }
 
