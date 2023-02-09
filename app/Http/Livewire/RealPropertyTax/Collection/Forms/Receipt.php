@@ -19,10 +19,10 @@ class Receipt extends Component
     public function mount($trn){
         // $this->receipt = RptIssuedReceiptData::all();
         $this->receipt = RptIssuedReceipt::with('receipt_datas')->where('trn',$trn)->first();
-        $this->initial_top = 228;
+        $this->initial_top = 323;
         $this->initial_sef = 0;
         $this->initial_total = 0;
-        $this->array_gap = 18;
+        $this->array_gap = 25;
         $this->array_size = 1370;
         $this->is_background = false;
     }

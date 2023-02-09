@@ -27,7 +27,7 @@
             /* bottom: 0px; */
             /* rotate: 90deg; */
             font-family: 'Times New Roman', Times, serif;
-            font-size: 12px;
+            font-size: 18px;
             /* size: 10in 5in; */
 
         }
@@ -37,67 +37,67 @@
         }
         .row-1{
             position: absolute;
-            width: 10in;
-            top:24px;
+            width: 15in;
+            top:35px;
         }
         .image-size{
-            width: 5.5in;
+            /* width: 5.5in; */
             /* height: 5in; */
         }
         .row-2{
             position: absolute;
-            width: 10in;
-            top:40px;
+            width: 15in;
+            top:60px;
         }
         .row-3{
-            font-size: 16px;
+            font-size: 22px;
             position: absolute;
-            width: 10in;
-            top:105px;
+            width: 15in;
+            top:152px;
         }
         .row-4{
-            font-size: 14px;
+            font-size: 20px;
             position: absolute;
-            width: 10in;
-            top:126px;
+            width: 15in;
+            top:180px;
         }
         .row-5{
-            font-size: 16px;
+            font-size: 18px;
             position: absolute;
-            width: 10in;
-            top:160px;
+            width: 15in;
+            top:238px;
         }
         .row-6{
-            font-size: 16px;
+            font-size: 20px;
             position: absolute;
-            width: 10in;
-            top:224px;
+            width: 15in;
+            top:320px;
         }
         .row-7{
-            font-size: 16px;
+            font-size: 20px;
             position: absolute;
-            width: 10in;
-            top:275px;
+            width: 15in;
+            top:350px;
         }
         .row-8{
             font-size: 16px;
             position: absolute;
-            width: 10in;
-            top:292px;
+            width: 15in;
+            top:300px;
         }
         .row-9{
             font-size: 14px;
             position: absolute;
-            width: 10in;
-            top:360px;
+            width: 15in;
+            top:520px;
         }
         .row-10{
             position: absolute;
-            top:390px;
+            top:560px;
         }
         .row-11{
             position: absolute;
-            top:429px;
+            top:590px;
         }
         .row-12{
             position: absolute;
@@ -129,83 +129,83 @@
         {{-- <img class="image-size image-print-size {{ $is_background ? 'no-print' : '' }}" style="position: fixed;z-index:-1;" src="{{ url('img\system\AF56.jpg') }}" /> --}}
         {{-- First Row --}}
         <div class="row-1">
-            <span style="margin-left: 370px">{{ $receipt->prev_trn }}</span>
+            <span style="margin-left: 540px">{{ $receipt->prev_trn }}</span>
         </div>
         <div class="row-1">
-            <span style="margin-left: 520px">{{ date('m/d/Y',strtotime($receipt->prev_date))}}</span>
+            <span style="margin-left: 730px">{{ date('m/d/Y',strtotime($receipt->prev_date))}}</span>
         </div>
-        <div class="row-1" style="margin-left: 680px;width:200px;">
+        <div class="row-1" style="margin-left: 980px;width:200px;">
             <span style="">{{ $receipt->prev_for }}</span>
         </div>
         {{-- Second Row --}}
-        <div class="row-2" style="margin-left: 760px;font-size: 16px;">
+        <div class="row-2" style="margin-left: 1050px;font-size: 16px;">
             <span style="">TRN: {{ $receipt->trn }}</span>
         </div>
         {{-- Third Row --}}
-        <div class="row-3">
-            <span style="margin-left: 130px">{{ $receipt->province }}</span>
-            <span style="margin-left: 198px">{{ $receipt->city }}</span>
-            <span style="margin-left: 216px">{{ date('m/d/Y',strtotime($receipt->date)) }}</span>
+        <div class="row-3" width="1000px">
+            <span style="margin-left: 260px">{{ $receipt->province }}</span>
+            <span style="margin-left: 260px">{{ $receipt->city }}</span>
+            <span style="margin-left: 300px">{{ date('m/d/Y',strtotime($receipt->date)) }}</span>
         </div>
         {{-- Fourth Row --}}
         <div class="row-4" style="margin-top:1px;">
-            <span style="margin-left: 235px">{{ $receipt->payee }}</span>
+            <span style="margin-left: 350px">{{ $receipt->payee }}</span>
         </div>
-        <div class="row-4" style="margin-left: 590px;width:190px;line-height:.5;">
+        <div class="row-4" style="margin-left: 830px;width:190px;line-height:.5;">
             <span style="font-family:Tahoma-narrow;font-size:9px;">{{ $receipt->amount_words }}</span>
         </div>
-        <div class="row-4" style="margin-left:830px;width:85px;margin-top:1px;text-align:center">
+        <div class="row-4" style="margin-left:1180px;width:85px;margin-top:1px;text-align:center">
             <span style="font-family:Tahoma-narrow;font-size:12px;">{{ number_format($receipt->amount,2,'.',',') }}</span>
         </div>
         {{-- Fifth Row --}}
         <div class="row-5">
-            <span style="margin-left: 315px">{{ $receipt->for }}</span>
+            <span style="margin-left: 440px">{{ $receipt->for }}</span>
         </div>
         <div class="row-5">
-            <span style="margin-left: 490px">{{ $receipt->is_basic ? '✔' : '' }}</span>
+            <span style="margin-left: 700px">{{ $receipt->is_basic ? '✔' : '' }}</span>
         </div>
         <div class="row-5">
-            <span style="margin-left: 635px">{{ $receipt->is_sef ? '✔' : '' }}</span>
+            <span style="margin-left: 910px">{{ $receipt->is_sef ? '✔' : '' }}</span>
         </div>
         {{-- Six Row --}}
-        <div class="row-6" style="margin-left:40px;width: 90px;">
-            <span style="font-size:10px;">
+        <div class="row-6" style="margin-left:48px;width: 90px;">
+            <span style="font-size:16px;">
                 {{ $receipt->owner_name }}
             </span>
         </div>
         <div class="row-6" style="margin-left:136px;width:250px;">
-            <span style="font-size:10px;">
+            <span style="font-size:16px;">
                 {{ $receipt->location }}
             </span>
         </div>
         <div class="row-6" style="margin-left:250px;width:200px;text-align:center">
-            <span style="font-size:10px;">
+            <span style="font-size:16px;">
                 {{ $receipt->tdn }}
             </span>
         </div>
 
         @if (count($receipt->receipt_datas) > 0)
         @foreach ($receipt->receipt_datas as $computation)
-            <div style="top:{{ $initial_top }}px;position:absolute;margin-left:512px; width: 60px;text-align:right;">
-                <span style="font-size:10px;">{{ number_format($computation['av'],2, '.', ',') }}</span>
+            <div style="top:{{ $initial_top }}px;position:absolute;margin-left:840px; width: 60px;text-align:right;">
+                <span style="font-size:16px;">{{ number_format($computation['av'],2, '.', ',') }}</span>
             </div>
-            <div style="top:{{ $initial_top }}px;position:absolute;margin-left:578px; width: 60px;text-align:right;">
-                <span style="font-size:10px;">{{ number_format($computation['td'],2, '.', ',') }}</span>
+            <div style="top:{{ $initial_top }}px;position:absolute;margin-left:900px; width: 60px;text-align:right;">
+                <span style="font-size:16px;">{{ number_format($computation['td'],2, '.', ',') }}</span>
             </div>
-            <div style="top:{{ $initial_top }}px;position:absolute;margin-left:683px; width: 60px;text-align:right;">
-                <span style="font-size:10px;">{{ $computation['label'] }}</span>
+            <div style="top:{{ $initial_top }}px;position:absolute;margin-left: 960px; width: 98px;text-align:right;">
+                <span style="font-size:14px;">{{ $computation['label'] }}</span>
             </div>
             {{-- <div sttop:{{ $initial_top }}px;yle="posiion: absolute;margin-left:565px; width: 40px;text-align:right;">
-                <span style="font-size:10px;">{{ $computation[''] }}</span>
+                <span style="font-size:16px;">{{ $computation[''] }}</span>
             </div> --}}
-            <div style="top:{{ $initial_top }}px;position:absolute;margin-left:740px; width: 60px;text-align:right;">
-                <span style="font-size:10px;">{{ number_format($computation['total_td'],2, '.', ',') }}</span>
+            <div style="top:{{ $initial_top }}px;position:absolute;margin-left:1070px; width: 60px;text-align:right;">
+                <span style="font-size:16px;">{{ number_format($computation['total_td'],2, '.', ',') }}</span>
             </div>
-            <div style="top:{{ $initial_top }}px;position:absolute;margin-left:796px; width: 60px;text-align:right;">
-                <span style="font-size:10px;">({{ number_format($computation['penalty'],2, '.', ',') }})</span>
+            <div style="top:{{ $initial_top }}px;position:absolute;margin-left:1150px; width: 60px;text-align:right;">
+                <span style="font-size:16px;">({{ number_format($computation['penalty'],2, '.', ',') }})</span>
             </div>
-            <div style="top:{{ $initial_top }}px;position:absolute;margin-left:862px; width: 60px;text-align:right;">
-                <span style="font-size:10px;">{{ number_format($computation['subtotal'],2, '.', ',') }}</span>
+            <div style="top:{{ $initial_top }}px;position:absolute;margin-left:1220px; width: 60px;text-align:right;">
+                <span style="font-size:16px;">{{ number_format($computation['subtotal'],2, '.', ',') }}</span>
             </div>
             @php
                 $initial_top = $initial_top + $array_gap;
@@ -217,26 +217,26 @@
             @endphp
 
         @endif
-        <div style="top:{{ $initial_top }}px;position:absolute;margin-left:695px; width: 45px;text-align:right;">
-            <span style="font-size:10px;">{{ 'SEF' }}</span>
+        <div style="top:{{ $initial_top }}px;position:absolute;margin-left:1000px; width: 45px;text-align:right;">
+            <span style="font-size:16px;">{{ 'SEF' }}</span>
         </div>
-        <div style="top:{{ $initial_top }}px;position:absolute;margin-left:862px; width: 60px;text-align:right;">
-            <span style="font-size:10px;">{{ number_format($initial_sef,2, '.', ',') }}</span>
+        <div style="top:{{ $initial_top }}px;position:absolute;margin-left:1230px; width: 60px;text-align:right;">
+            <span style="font-size:16px;">{{ number_format($initial_sef,2, '.', ',') }}</span>
         </div>
 
-        <div class="row-9" style="margin-left:690px; width: 50px;text-align:right;">
-            <span style="">TOTAL:</span>
+        <div class="row-9" style="margin-left:1000px; width: 50px;text-align:right;">
+            <span style="font-size:16px;">TOTAL:</span>
         </div>
-        <div class="row-9" style="margin-left:830px; width: 92px;text-align:right;">
-            <span>P {{ number_format($receipt->amount,2,'.',',') }}</span>
-        </div>
-        {{-- Tenth Row --}}
-        <div class="row-10" style="margin-left:692px;width: 200px;text-align:center;">
-            <span style="font-size:10px">{{ $receipt->user_treasurer }}</span>
+        <div class="row-9" style="margin-left:1200px; width: 92px;text-align:right;">
+            <span style="font-size:16px;">P {{ number_format($receipt->amount,2,'.',',') }}</span>
         </div>
         {{-- Tenth Row --}}
-        <div class="row-11" style="margin-left:692px;width: 200px;text-align:center;">
-            <span style="font-size:10px">{{ $receipt->user_deputy }}</span>
+        <div class="row-10" style="margin-left:1040px;width: 200px;text-align:center;">
+            <span style="font-size:16px">{{ $receipt->user_treasurer }}</span>
+        </div>
+        {{-- Tenth Row --}}
+        <div class="row-11" style="margin-left:1040px;width: 200px;text-align:center;">
+            <span style="font-size:16px">{{ $receipt->user_deputy }}</span>
         </div>
         {{-- BUTTONS --}}
         <div class="row-12 no-print" style="margin-left:100px;width:200px;">
